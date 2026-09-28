@@ -1,0 +1,212 @@
+{
+  "_說明": "本檔由 Lark「💳 全支付｜充電漫遊UI Flow」的白板人工整理而成（白板無法自動拆成步驟）。原文件白板更新時，請同步修改本檔；或把原文件改寫成 AmpGO 那份的分欄格式，之後就能自動同步。（本 repo 為公開，只放可以給用戶看的內容。）",
+  "id": "pxpay-roaming",
+  "channel": "pxpay",
+  "title": "充電漫遊",
+  "icon": "💳",
+  "summary": "在全支付 App 點【電動車充電】找站、掃碼、充電到付款的完整流程。",
+  "source": {
+    "type": "lark-docx",
+    "id": "O7QCdTDNZoYvFTxkMPOlInhegHc",
+    "name": "💳 全支付｜充電漫遊UI Flow"
+  },
+  "sections": [
+    {
+      "title": "充電啟動流程",
+      "blocks": [
+        {
+          "t": "p",
+          "text": "從全支付 App 首頁的【電動車充電】進入，依序完成找站、掃碼、確認費率、充電與付款。"
+        },
+        {
+          "t": "steps",
+          "cols": [
+            {
+              "num": "1",
+              "title": "點擊【電動車充電】",
+              "imgs": [
+                {
+                  "doc": "wb-start",
+                  "token": "MSWJbfFOqoMnmBxCyhrllRa5gKc"
+                }
+              ]
+            },
+            {
+              "num": "2",
+              "title": "進入服務主頁：地圖頁",
+              "imgs": [
+                {
+                  "doc": "wb-start",
+                  "token": "Ss4pbwKLYowr4VxCcOulN71hgud"
+                }
+              ]
+            },
+            {
+              "num": "3.1",
+              "title": "點擊地圖圖標",
+              "text": "可查看站點基本資訊，以及掃碼啟動。",
+              "imgs": [
+                {
+                  "doc": "wb-start",
+                  "token": "CejTbjjrxomqphxRAndlqjsPguc"
+                }
+              ]
+            },
+            {
+              "num": "3.2",
+              "title": "點擊基本資訊",
+              "text": "可查看站點完整資訊，以及掃碼啟動。",
+              "imgs": [
+                {
+                  "doc": "wb-start",
+                  "token": "SGhEb1035oU23HxsvDzl7jmegC0"
+                }
+              ]
+            },
+            {
+              "num": "4",
+              "title": "掃碼啟動攝影機鏡頭",
+              "imgs": [
+                {
+                  "doc": "wb-start",
+                  "token": "LJ57bw1tUosxQHxXQeDlsMFrg8f"
+                }
+              ]
+            },
+            {
+              "num": "5",
+              "title": "掃描充電樁上 QR Code",
+              "imgs": [
+                {
+                  "doc": "wb-start",
+                  "token": "TTEobdtxpoiDPwxIOK4locWvg6c"
+                }
+              ]
+            },
+            {
+              "num": "6",
+              "title": "啟動前費率確認",
+              "imgs": [
+                {
+                  "doc": "wb-start",
+                  "token": "QUWibiXDeov1XhxeoI2lf9pPgFd"
+                },
+                {
+                  "doc": "wb-start",
+                  "token": "QmvTb07vqoYKtzx23fWl5eZog1c",
+                  "caption": "發票設定畫面"
+                }
+              ]
+            },
+            {
+              "num": "7",
+              "title": "充電方式判斷與提醒",
+              "imgs": [
+                {
+                  "doc": "wb-start",
+                  "token": "PvSnbwOGso2lUWxL5OMlNmzIg6e"
+                }
+              ]
+            },
+            {
+              "num": "8",
+              "title": "充電啟動中",
+              "imgs": [
+                {
+                  "doc": "wb-start",
+                  "token": "XvKRby3Wdox99Kx2GgAl2ldfgyf"
+                }
+              ]
+            },
+            {
+              "num": "9",
+              "title": "開始充電",
+              "text": "畫面顯示充電狀態與預估費用。",
+              "imgs": [
+                {
+                  "doc": "wb-start",
+                  "token": "HJzsbWTojo4nfaxWpi0lPby4gkc"
+                }
+              ]
+            },
+            {
+              "num": "10",
+              "title": "按下結束充電",
+              "imgs": [
+                {
+                  "doc": "wb-start",
+                  "token": "De0mbYoLCoygjuxBNPmlgIgOg1e"
+                }
+              ]
+            },
+            {
+              "num": "11",
+              "title": "拔槍後才會停止計費",
+              "text": "App 會引導你拔槍，拔槍後才會停止計費。",
+              "imgs": [
+                {
+                  "doc": "wb-start",
+                  "token": "UZOdbejrRobSTVxrkH0lvKmKgFg"
+                }
+              ]
+            },
+            {
+              "num": "12",
+              "title": "出現付款資訊",
+              "imgs": [
+                {
+                  "doc": "wb-start",
+                  "token": "RudubUd11owjmSxl2VJlEeKSgTc"
+                }
+              ]
+            },
+            {
+              "num": "13",
+              "title": "完成付款（全支付頁面）",
+              "imgs": [
+                {
+                  "doc": "wb-start",
+                  "token": "XaKzbQoOfoaKinxuPXrlqD0JgCh"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "t": "tip",
+          "text": "全支付採「非預授權」機制：結束充電後，必須再點擊【付款】才會正式扣款。有待付款訂單時，需先結清才能進行下一筆充電。"
+        },
+        {
+          "t": "flow",
+          "key": "start",
+          "title": "一張圖看完整流程"
+        }
+      ]
+    },
+    {
+      "title": "常見問題",
+      "blocks": [
+        {
+          "t": "faq",
+          "items": [
+            {
+              "group": "地圖與搜尋",
+              "q": "全支付版本的地圖顯示與搜尋功能，和 AmpGO 官方版本有什麼不同？",
+              "a": "全支付版本主要針對「漫遊服務」進行了介面簡化：\n・圖示辨識：地圖上帶有「**文字**」標示的為**支援漫遊之站點**；僅顯示「**圓點**」的則為**非漫遊站點**。\n・搜尋限制：搜尋列僅限查找「充電站」相關資訊（名稱及地址）。\n・營運商篩選：**篩選列表中，只會顯示有支援漫遊的營運商。**"
+            },
+            {
+              "group": "結帳與扣款機制",
+              "q": "全支付的扣款流程是什麼？如果不小心關掉 App 沒付到錢怎麼辦？",
+              "a": "全支付採「**非預授權**」機制。\n當您結束充電後，必須在畫面上再次點擊「**付款**」才會正式扣款。\n**若中途不小心滑掉 App 導致付款失敗，請重新回到全支付 App 的操作介面，即可接續完成該筆訂單的扣款程序。**\n⚠️ 若有待付款訂單，需要結清後才可以繼續下筆充電。"
+            },
+            {
+              "group": "帳號與權益",
+              "q": "我的 AmpGO 帳號與全支付帳號是互通的嗎？優惠券可以共用嗎？",
+              "a": "兩者的帳號系統完全獨立。因此 **AmpGO App 內的優惠券與全支付 App 無法共用**。\n此外，**全支付並未開放「電電商城」功能。**"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

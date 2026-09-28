@@ -1,0 +1,45 @@
+{
+  "_說明": "網站設定。新增通路時在 channels 加一筆，教學檔的 channel 要對上這裡的 id。",
+  "title": "DeNDeN UI Flow 圖解",
+  "subtitle": "AmpGO・全支付 充電漫遊操作畫面",
+  "channels": [
+    { "id": "ampgo", "name": "AmpGO", "color": "#0A84FF" },
+    { "id": "pxpay", "name": "全支付", "color": "#E8453C" }
+  ],
+  "guideOrder": ["ampgo-roaming", "ampgo-lottery", "pxpay-roaming"],
+
+  "_troubleshooting": "列在這裡的段落會放到首頁「異常排解」區；其他有截圖步驟的段落放「操作流程」，沒有截圖的放「說明與常見問題」。格式：教學 id/段落標題",
+  "troubleshooting": [
+    "ampgo-roaming/扣款失敗",
+    "ampgo-roaming/錯誤畫面說明",
+    "ampgo-roaming/提高啟動充電成功率",
+    "ampgo-roaming/無法拔槍時"
+  ],
+
+  "_screenLookup": "「看畫面找問題」要列出的畫面。steps 不寫＝整個段落的步驟都列出；寫了就只列這些步驟標題。",
+  "screenLookup": [
+    { "flow": "ampgo-roaming/錯誤畫面說明" },
+    { "flow": "ampgo-roaming/開始充電", "steps": ["QR Code 無法使用時", "充電樁沒有回應時"] },
+    { "flow": "ampgo-roaming/提高啟動充電成功率", "steps": ["【B02】有隨插即充"] },
+    { "flow": "ampgo-roaming/扣款失敗", "steps": ["付款明細顯示扣款失敗", "首頁出現待付款提示"] }
+  ],
+
+  "_publicForbidden": "網站資料出現這些字就中止建置，避免內部資訊外流。",
+  "publicForbidden": ["🔒", "對外禁止揭露", "後台", "den-biz", "marketing-admin", "DeNHub", "DenHub", "判斷邏輯", "larksuite.com", "TBC"],
+
+  "synonyms": [
+    ["拔槍", "拔不出來", "拔不起來", "槍卡住", "拔不掉"],
+    ["扣款", "付款", "刷卡", "付費", "繳費", "扣錢"],
+    ["發票", "統編", "載具", "報帳"],
+    ["折扣券", "優惠券", "票券", "折價券"],
+    ["隨插即充", "自動充電", "autocharge", "車牌辨識", "plug and charge"],
+    ["啟動", "開始充電", "啟動充電", "開不了"],
+    ["結束充電", "停止充電", "停不下來"],
+    ["無反應", "沒反應", "沒有回應", "無回應", "沒回應", "卡住", "當掉"],
+    ["轉圈", "轉一轉", "一直轉", "啟動中", "等待中", "請稍候"],
+    ["全支付", "px pay", "pxpay", "全聯"],
+    ["驗證碼", "otp", "簡訊"],
+    ["抽獎", "轉盤", "免單"],
+    ["qr code", "qrcode", "掃碼", "掃描", "條碼"]
+  ]
+}

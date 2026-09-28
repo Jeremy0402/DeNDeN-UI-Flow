@@ -1,0 +1,4 @@
+dist/
+.DS_Store
+# 內部資料：不進公開 repo，只留在本機
+private/
