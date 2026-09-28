@@ -327,6 +327,7 @@ function normalizeCurated(g) {
     if (o.t === 'faq') o.items = o.items.map((it) => ({ group: it.group, q: it.q, a: [{ t: 'p', r: mdRuns(it.a) }] }));
     if (o.t === 'steps') {
       o.cols = o.cols.map((c) => ({
+        label: c.num || undefined,   // 原文件上的步驟編號（例如 3.1），網站照原文顯示
         title: c.title ? mdRuns(c.title) : null,
         body: [
           ...(c.text ? [{ t: 'p', r: mdRuns(c.text) }] : []),

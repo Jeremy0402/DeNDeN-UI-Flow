@@ -29,7 +29,10 @@
   const findFlow = (gid, title) => flows.find((f) => f.gid === gid && f.title === title);
   const chBadge = (id) => { const c = chMap[id]; return c ? `<span class="badge" style="--ch:${c.color}"><span class="ch-dot"></span>${esc(c.name)}</span>` : ''; };
   const thumb = (im) => (im ? im.th || im.src : '');
-  const stepTitle = (f, i) => plain(f.steps[i].title) || `第 ${i + 1} 個畫面`;
+  const stepTitle = (f, i) => plain(f.steps[i].title) || (f.steps.length === 1 ? f.title : `第 ${i + 1} 個畫面`);
+  const stepNo = (f, i) => f.steps[i].label || String(i + 1);
+  // 截圖呈現方式：一般手機截圖整張顯示；超長截圖固定寬度可捲動；寬圖不加框
+  const shotMode = (im) => { const r = im.h && im.w ? im.h / im.w : 2; return r > 2.8 ? 'long' : r < 1.3 ? 'wide' : 'phone'; };
   const KIND = {
     flow: { h: '📱 操作流程', hint: '用戶一般使用時會看到的畫面' },
     trouble: { h: '🛠️ 異常排解', hint: '用戶卡住時，對照畫面找原因' },
@@ -150,7 +153,7 @@
         const ch = f.chapters[s.ch];
         const label = s.ch !== lastCh && ch.title ? `<div class="ch-label">${esc(ch.title)}</div>` : '';
         lastCh = s.ch;
-        return `${label}<a href="${flowHref(f, k + 1)}"><span class="th">${s.imgs[0] ? `<img src="${esc(thumb(s.imgs[0]))}" alt="" loading="lazy">` : ''}</span><span class="t"><span class="n">${k + 1}</span>${esc(stepTitle(f, k))}</span></a>`;
+        return `${label}<a href="${flowHref(f, k + 1)}"><span class="th">${s.imgs[0] ? `<img src="${esc(thumb(s.imgs[0]))}" alt="" loading="lazy">` : ''}</span><span class="t"><span class="n">${esc(stepNo(f, k))}</span>${esc(stepTitle(f, k))}</span></a>`;
       }).join('');
       return `<div class="wrap">${crumbs}<div class="v-head"><h1>${esc(f.title)}</h1><span class="count">共 ${n} 個畫面</span>
         <div class="acts"><a class="btn primary" href="${flowHref(f, 1)}">▶ 一步一步看</a>${overview}</div></div>
@@ -165,7 +168,9 @@
     const prev = i > 0 ? flowHref(f, i) : null;
     const next = i < n - 1 ? flowHref(f, i + 2) : null;
     const nextFlow = siblings[siblings.indexOf(f) + 1];
-    const alt = `${i + 1}. ${stepTitle(f, i)}`;
+    const alt = `${stepNo(f, i)}. ${stepTitle(f, i)}`;
+    // 原文件有自己的步驟編號（例如 1、2、3.1、3.2…13）時，計數也照原文顯示
+    const count = st.label ? `第 ${st.label} / ${f.steps[n - 1].label} 步` : `第 ${i + 1} / ${n} 個畫面`;
     const nextHint = next
       ? `<a class="next-hint" href="${next}">${f.steps[i + 1].imgs[0] ? `<img src="${esc(thumb(f.steps[i + 1].imgs[0]))}" alt="">` : ''}<span><small>下一步</small><strong>${esc(stepTitle(f, i + 1))}</strong></span><span class="go">→</span></a>`
       : `<div class="next-hint done">✅ 這個流程到這裡結束</div>${nextFlow ? `<a class="next-hint" href="${flowHref(nextFlow)}"><span><small>接著看下一個流程</small><strong>${esc(nextFlow.title)}</strong></span><span class="go">→</span></a>` : ''}`;
@@ -174,28 +179,32 @@
     const film = f.steps.map((s, k) => {
       const gap = s.ch !== lastCh && k ? '<span class="gap"></span>' : k ? '<span class="arr">→</span>' : '';
       lastCh = s.ch;
-      return `${gap}<a href="${flowHref(f, k + 1)}" class="${k === i ? 'on' : ''}" title="${esc(stepTitle(f, k))}"><span class="th">${s.imgs[0] ? `<img src="${esc(thumb(s.imgs[0]))}" alt="" loading="lazy">` : ''}</span>${k + 1}. ${esc(plain(s.title))}</a>`;
+      return `${gap}<a href="${flowHref(f, k + 1)}" class="${k === i ? 'on' : ''}" title="${esc(stepTitle(f, k))}"><span class="th">${s.imgs[0] ? `<img src="${esc(thumb(s.imgs[0]))}" alt="" loading="lazy">` : ''}</span>${esc(stepNo(f, k))}. ${esc(plain(s.title))}</a>`;
     }).join('');
     const chapterPills = f.chapters.length > 1
       ? `<div class="chapters">${f.chapters.map((c) => `<a class="pill${c === ch ? ' on' : ''}" href="${flowHref(f, c.start + 1)}">${esc(c.title || '開始')}</a>`).join('')}</div>` : '';
 
     return `<div class="wrap">${crumbs}
-      <div class="v-head"><h1>${esc(f.title)}</h1><span class="count">第 ${i + 1} / ${n} 個畫面</span>
+      <div class="v-head"><h1>${esc(f.title)}</h1><span class="count">${count}</span>
         <div class="acts"><button class="btn" type="button" data-copy="${flowHref(f, i + 1)}">🔗 複製這一步的連結</button><a class="btn" href="${flowHref(f)}/all">▦ 全部畫面</a>${overview}</div></div>
       ${f.intro.length && i === 0 ? `<div class="v-intro prose">${blocksHTML(f.intro)}</div>` : ''}
       <div class="viewer" id="viewer">
         <div class="stage" id="stage">
-          <a class="arrow prev${prev ? '' : ' off'}" href="${prev || '#'}" aria-label="上一步">‹</a>
-          <div class="phone">${im ? `<button class="screen" type="button" data-zoom="${esc(im.src)}" data-cap="${esc(alt)}" aria-label="放大畫面"><img src="${esc(im.src)}" alt="${esc(alt)}"${im.w ? ` width="${im.w}" height="${im.h}"` : ''}></button>` : '<div class="screen"><div class="noimg">這一步沒有截圖</div></div>'}</div>
-          <a class="arrow next${next ? '' : ' off'}" href="${next || '#'}" aria-label="下一步">›</a>
+          <div class="stage-box">
+            <a class="arrow prev${prev ? '' : ' off'}" href="${prev || '#'}" aria-label="上一步">‹</a>
+            ${im ? `<div class="shot ${shotMode(im)}" style="background-image:url('${esc(thumb(im))}')">
+              <button class="zoom-btn" type="button" data-zoom="${esc(im.src)}" data-cap="${esc(alt)}" aria-label="放大畫面：${esc(alt)}"><img id="shot-img" src="${esc(im.src)}" alt="${esc(alt)}"${im.w ? ` width="${im.w}" height="${im.h}"` : ''} decoding="async"></button>
+              ${shotMode(im) === 'long' ? '<span class="long-hint">↓ 長截圖，可以往下捲</span>' : ''}</div>` : '<div class="shot none">這一步沒有截圖</div>'}
+            <a class="arrow next${next ? '' : ' off'}" href="${next || '#'}" aria-label="下一步">›</a>
+          </div>
           ${st.imgs.length > 1 ? `<div class="alts">${st.imgs.map((m, k) => `<a href="${flowHref(f, i + 1)}/${k}" class="${m === im ? 'on' : ''}" title="${esc(m.caption || `第 ${k + 1} 張`)}"><img src="${esc(thumb(m))}" alt=""></a>`).join('')}</div>` : ''}
-          ${im ? '<div class="zoom-hint">點畫面可以放大</div>' : ''}
+          ${im ? '<div class="zoom-hint">點圖片可以放大看細節</div>' : ''}
         </div>
         <div class="detail">
           <div class="top-part">
             ${ch.title ? `<div class="chapter">${esc(ch.title)}</div>` : ''}
             ${i === ch.start && ch.intro.length ? `<div class="ch-intro prose"><div class="t">先了解</div>${blocksHTML(ch.intro)}</div>` : ''}
-            <div class="step-no"><span class="big-num">${i + 1}</span><small>/ ${n}</small></div>
+            <div class="step-no"><span class="big-num">${esc(stepNo(f, i))}</span><small>/ ${esc(f.steps[n - 1].label || n)}</small></div>
             <h2>${st.title ? runsHTML(st.title) : esc(stepTitle(f, i))}</h2>
           </div>
           <div class="bottom-part">
@@ -208,7 +217,7 @@
       <div class="film">${chapterPills}<div class="row" id="film">${film}</div></div>
       ${faq}${sibHTML}${footer()}
     </div>
-    <div class="mbar"><a class="btn${prev ? '' : ' off'}" href="${prev || '#'}">‹ 上一步</a><a class="mid" href="${flowHref(f)}/all">${i + 1} / ${n}<small>全部畫面</small></a>
+    <div class="mbar"><a class="btn${prev ? '' : ' off'}" href="${prev || '#'}">‹ 上一步</a><a class="mid" href="${flowHref(f)}/all">${st.label ? `${esc(st.label)} / ${esc(f.steps[n - 1].label)}` : `${i + 1} / ${n}`}<small>全部畫面</small></a>
       ${next ? `<a class="btn primary" href="${next}">下一步 ›</a>` : nextFlow ? `<a class="btn primary" href="${flowHref(nextFlow)}">下一個流程 ›</a>` : '<a class="btn off" href="#">已完成</a>'}</div>`;
   }
 
@@ -313,7 +322,7 @@
     const { list, words } = search(q);
     const chName = channel === 'all' ? '' : `（只搜尋 ${chMap[channel].name}）`;
     const item = (d) => {
-      const label = d.kind === 'step' ? `${d.k + 1}. ${d.title}` : d.title;
+      const label = d.kind === 'step' ? `${stepNo(d.f, d.k)}. ${d.title}` : d.title;
       const where = d.kind === 'step' ? `${esc(d.f.title)} › 第 ${d.k + 1} 個畫面` : d.kind === 'faq' ? `${esc(d.f.title)} › 常見問題` : `${esc(d.f.guide)} › 整個流程`;
       return `<a class="r-item" href="${d.href}">${d.img ? `<span class="r-thumb"><img src="${esc(thumb(d.img))}" alt="" loading="lazy"></span>` : `<span class="r-thumb icon">${d.kind === 'faq' ? '💬' : '📄'}</span>`}
         <span class="r-main"><div class="r-title">${highlight(label, words)}</div><div class="r-path">${chBadge(d.f.channel)}<span>${where}</span></div>
@@ -341,7 +350,7 @@
   function render() {
     const r = parseRoute();
     let html, title;
-    if (r.view === 'flow') { html = viewFlow(r.f, r.pos, r.sub); title = r.pos === 'all' || !r.f.steps.length ? r.f.title : `${r.f.title}（${Math.min(r.pos, r.f.steps.length)}/${r.f.steps.length}）`; }
+    if (r.view === 'flow') { html = viewFlow(r.f, r.pos, r.sub); title = r.pos === 'all' || !r.f.steps.length ? r.f.title : `${r.f.title}（${stepNo(r.f, Math.min(r.pos, r.f.steps.length) - 1)}/${r.f.steps.at(-1).label || r.f.steps.length}）`; }
     else if (r.view === 'lookup') { html = viewLookup(r.sel); title = '看畫面找問題'; }
     else if (r.view === 'search') { html = viewSearch(r.q); title = `搜尋：${r.q}`; }
     else { html = viewHome(); title = null; }
@@ -362,6 +371,8 @@
     } else window.scrollTo(0, 0);
     lastFlow = stepping ? r.f.id : null;
 
+    const shot = $('#shot-img');
+    if (shot) { const done = () => shot.classList.add('ok'); if (shot.complete && shot.naturalWidth) done(); else shot.addEventListener('load', done, { once: true }); }
     if (stepping && r.f.steps.length) {
       const film = $('#film');
       const on = film && film.querySelector('a.on');
@@ -414,9 +425,14 @@
   }
 
   document.addEventListener('click', (e) => {
-    const t = e.target.closest('[data-ch],[data-copy],[data-zoom],.lb-close,#q-clear');
+    const t = e.target.closest('[data-ch],[data-copy],[data-zoom],[data-theme-set],.lb-close,#q-clear');
     if (!t) return;
-    if (t.dataset.ch) {
+    if (t.dataset.themeSet) {
+      theme = t.dataset.themeSet;
+      store.set('uf.theme', theme);
+      applyTheme();
+      renderChannels();
+    } else if (t.dataset.ch) {
       channel = t.dataset.ch;
       store.set('uf.channel', channel);
       renderChannels();
@@ -460,13 +476,21 @@
   });
   $('#q').addEventListener('keydown', (e) => { if (e.key === 'Enter' && $('#q').value.trim()) location.hash = `#/s/${encodeURIComponent($('#q').value.trim())}`; });
 
+  const THEMES = [['auto', '◐', '跟隨系統'], ['light', '☀︎', '淺色'], ['dark', '☾', '深色']];
+  let theme = store.get('uf.theme') || 'auto';
+  function applyTheme() {
+    if (theme === 'auto') delete document.documentElement.dataset.theme;
+    else document.documentElement.dataset.theme = theme;
+  }
   function renderChannels() {
     const tabs = [{ id: 'all', name: '全部' }, ...D.channels];
-    $('#channelbar').innerHTML = `<span class="label">通路</span>${tabs.map((c) => `<button type="button" class="ch-tab" data-ch="${c.id}" aria-pressed="${channel === c.id}">${c.color ? `<span class="ch-dot" style="--ch:${c.color}"></span>` : ''}${esc(c.name)}</button>`).join('')}`;
+    $('#channelbar').innerHTML = `<span class="label">通路</span>${tabs.map((c) => `<button type="button" class="ch-tab" data-ch="${c.id}" aria-pressed="${channel === c.id}">${c.color ? `<span class="ch-dot" style="--ch:${c.color}"></span>` : ''}${esc(c.name)}</button>`).join('')}`
+      + `<div class="theme-seg" role="group" aria-label="外觀"><span class="label">外觀</span>${THEMES.map(([id, icon, name]) => `<button type="button" data-theme-set="${id}" aria-pressed="${theme === id}" title="${name}" aria-label="外觀：${name}"><span aria-hidden="true">${icon}</span><span class="t">${name}</span></button>`).join('')}</div>`;
   }
 
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-  if (/[?&]theme=(light|dark)/.test(location.search)) document.documentElement.dataset.theme = location.search.match(/theme=(\w+)/)[1];
+  if (/[?&]theme=(light|dark)/.test(location.search)) theme = location.search.match(/theme=(\w+)/)[1];
+  applyTheme();
   $('#brand-title').textContent = D.site.title;
   $('#brand-sub').textContent = D.site.subtitle || '';
   renderChannels();
