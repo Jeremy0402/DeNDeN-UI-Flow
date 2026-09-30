@@ -5,20 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>DeNDeN UI Flow 圖解</title>
 <meta name="description" content="AmpGO、全支付充電漫遊的操作畫面圖解：一步一步看流程，遇到問題用畫面找原因。">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="assets/style.css">
 <script>/* 在畫面出現前套用使用者選的外觀，避免閃一下 */try{var t=localStorage.getItem('uf.theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body>
 <header class="topbar">
   <a class="brand" href="#/">
-    <span class="brand-mark" aria-hidden="true">⚡</span>
+    <img class="brand-logo" src="img/brand/dendan-logo.svg" alt="電電數位">
+    <span class="brand-divider" aria-hidden="true"></span>
     <span class="brand-text"><span class="brand-title" id="brand-title">DeNDeN UI Flow 圖解</span><span class="brand-sub" id="brand-sub"></span></span>
   </a>
   <div class="search" role="search">
     <input id="q" type="search" autocomplete="off" enterkeyhint="search" placeholder="搜尋畫面或問題，例如：拔不出來、發票" aria-label="搜尋">
-    <span class="s-icon" aria-hidden="true">🔍</span>
-    <button type="button" class="s-clear" id="q-clear" aria-label="清除搜尋" hidden>✕</button>
+    <span class="s-icon" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+    <button type="button" class="s-clear" id="q-clear" aria-label="清除搜尋" hidden><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
   <nav class="top-nav" aria-label="主要頁面"><a href="#/" data-nav="home">流程總覽</a><a href="#/e" data-nav="e">看畫面找問題</a></nav>
 </header>
@@ -27,7 +30,7 @@
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="放大畫面" hidden>
   <div class="lb-scroll"><img class="lb-img" id="lb-img" alt=""></div>
   <div class="lb-cap" id="lb-cap"></div>
-  <button type="button" class="lb-close" aria-label="關閉">✕</button>
+  <button type="button" class="lb-close" aria-label="關閉"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <noscript>請開啟瀏覽器的 JavaScript 才能使用本頁。</noscript>

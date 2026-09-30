@@ -18,6 +18,28 @@
     set(k, v) { try { localStorage.setItem(k, v); } catch { /* 無痕模式存不了，不影響使用 */ } },
   };
 
+
+  /* ---------- 線條圖示（與 AI-Knowledge-Base、AmpGO-Campaign-Catalog 同一套，單色、跟著文字顏色） ---------- */
+  const ICONS = {
+    phone: '<rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>',
+    wrench: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+    file: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>',
+    chat: '<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>',
+    search: '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
+    inbox: '<polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
+    map: '<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/>',
+    link: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+    grid: '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',
+    checkCircle: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+    bulb: '<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
+    arrowRight: '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+    arrowDown: '<line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>',
+    monitor: '<rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>',
+    sun: '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>',
+    moon: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>',
+  };
+  const ic = (name) => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
+
   /* ---------- 資料 ---------- */
   const chMap = Object.fromEntries(D.channels.map((c) => [c.id, c]));
   const flows = D.flows;
@@ -34,9 +56,9 @@
   // 截圖呈現方式：一般手機截圖整張顯示；超長截圖固定寬度可捲動；寬圖不加框
   const shotMode = (im) => { const r = im.h && im.w ? im.h / im.w : 2; return r > 2.8 ? 'long' : r < 1.3 ? 'wide' : 'phone'; };
   const KIND = {
-    flow: { h: '📱 操作流程', hint: '用戶一般使用時會看到的畫面' },
-    trouble: { h: '🛠️ 異常排解', hint: '用戶卡住時，對照畫面找原因' },
-    info: { h: '📄 說明與常見問題', hint: '活動規則、FAQ' },
+    flow: { h: `${ic('phone')} 操作流程`, hint: '用戶一般使用時會看到的畫面' },
+    trouble: { h: `${ic('wrench')} 異常排解`, hint: '用戶卡住時，對照畫面找原因' },
+    info: { h: `${ic('file')} 說明與常見問題`, hint: '活動規則、FAQ' },
   };
 
   /* ---------- 文字 ---------- */
@@ -65,7 +87,7 @@
       const ind = b.ind ? ` class="ind-${Math.min(b.ind, 2)}"` : '';
       if (b.t === 'p') return `<p${ind}>${runsHTML(b.r)}</p>`;
       if (b.t === 'h') return `<h3>${runsHTML(b.r)}</h3>`;
-      if (b.t === 'tip') return `<div class="callout"><span>💡</span><div>${runsHTML(b.r)}</div></div>`;
+      if (b.t === 'tip') return `<div class="callout"><span class="callout-ic">${ic('bulb')}</span><div>${runsHTML(b.r)}</div></div>`;
       if (b.t === 'ul' || b.t === 'ol') {
         return `<${b.t}${ind}>${b.items.map((it) => `<li${it.n ? ` value="${it.n}"` : ''}>${runsHTML(it.r)}${it.kids ? blocksHTML(it.kids) : ''}</li>`).join('')}</${b.t}>`;
       }
@@ -93,7 +115,7 @@
     if (n) {
       const shots = f.steps.flatMap((s) => s.imgs.slice(0, 1)).slice(0, n > 4 ? 3 : 4);
       strip = `<div class="strip">${shots.map((im) => `<img src="${esc(thumb(im))}" alt="" loading="lazy">`).join('')}${n > 4 ? `<span class="more">+${n - 3} 步</span>` : ''}</div>`;
-    } else strip = `<div class="strip text">${f.faq.length ? '💬' : f.kind === 'trouble' ? '🛠️' : '📄'}</div>`;
+    } else strip = `<div class="strip text">${ic(f.faq.length ? 'chat' : f.kind === 'trouble' ? 'wrench' : 'file')}</div>`;
     const meta = n ? `${n} 個畫面` : f.faq.length ? `${f.faq.length} 題問答` : '文字說明';
     const desc = plain((f.intro.find((b) => b.r) || (f.blocks || []).find((b) => b.r) || {}).r);
     return `<a class="fcard ${f.kind}" href="${flowHref(f)}" style="--ch:${chMap[f.channel]?.color}">${strip}
@@ -108,7 +130,7 @@
     const ls = lookupsInCh();
     if (!ls.length) return '';
     return `<a class="fcard lookup" href="#/e" style="--ch:var(--blue)"><div class="strip">${ls.slice(0, 4).map((l) => `<img src="${esc(thumb(l.img))}" alt="" loading="lazy">`).join('')}</div>
-      <div class="info"><div class="meta"><span class="pill on">${ls.length} 個畫面</span></div><h3>🔍 看畫面找問題</h3>
+      <div class="info"><div class="meta"><span class="pill on">${ls.length} 個畫面</span></div><h3>${ic('search')} 看畫面找問題</h3>
       <div class="desc">請用戶傳截圖，點選一樣的畫面，就能看到原因和處理方式。</div></div></a>`;
   }
 
@@ -123,7 +145,7 @@
     return `<div class="wrap">
       <div class="hero"><h1>想看哪一個流程？</h1><p>點一個流程，就能像操作 App 一樣一步一步看畫面；遇到問題可以用畫面對照原因。</p>
         <div class="quick">${QUICK.map((q) => `<a href="#/s/${encodeURIComponent(q)}">${esc(q)}</a>`).join('')}</div></div>
-      ${groups || '<div class="empty"><div class="big">📭</div>這個通路目前還沒有流程</div>'}
+      ${groups || `<div class="empty"><div class="big">${ic('inbox')}</div>這個通路目前還沒有流程</div>`}
       ${footer()}</div>`;
   }
 
@@ -136,8 +158,8 @@
       const im = x.steps[0]?.imgs[0];
       return `<a href="${flowHref(x)}" class="${x === f ? 'on' : ''}">${im ? `<img src="${esc(thumb(im))}" alt="" loading="lazy">` : ''}${esc(x.title)}</a>`;
     }).join('')}</div></div>`;
-    const faq = f.faq.length ? `<div class="more-sec"><h2>💬 常見問題</h2>${faqHTML(f.faq)}</div>` : '';
-    const overview = f.overview && D.overviews[f.overview] ? `<a class="btn" href="${esc(D.overviews[f.overview].src)}" target="_blank" rel="noopener">🗺️ 一張圖看完整流程</a>` : '';
+    const faq = f.faq.length ? `<div class="more-sec"><h2>${ic('chat')} 常見問題</h2>${faqHTML(f.faq)}</div>` : '';
+    const overview = f.overview && D.overviews[f.overview] ? `<a class="btn" href="${esc(D.overviews[f.overview].src)}" target="_blank" rel="noopener">${ic('map')} 一張圖看完整流程</a>` : '';
 
     // 沒有截圖步驟：直接當文章看
     if (!n) {
@@ -172,12 +194,12 @@
     // 原文件有自己的步驟編號（例如 1、2、3.1、3.2…13）時，計數也照原文顯示
     const count = st.label ? `第 ${st.label} / ${f.steps[n - 1].label} 步` : `第 ${i + 1} / ${n} 個畫面`;
     const nextHint = next
-      ? `<a class="next-hint" href="${next}">${f.steps[i + 1].imgs[0] ? `<img src="${esc(thumb(f.steps[i + 1].imgs[0]))}" alt="">` : ''}<span><small>下一步</small><strong>${esc(stepTitle(f, i + 1))}</strong></span><span class="go">→</span></a>`
-      : `<div class="next-hint done">✅ 這個流程到這裡結束</div>${nextFlow ? `<a class="next-hint" href="${flowHref(nextFlow)}"><span><small>接著看下一個流程</small><strong>${esc(nextFlow.title)}</strong></span><span class="go">→</span></a>` : ''}`;
+      ? `<a class="next-hint" href="${next}">${f.steps[i + 1].imgs[0] ? `<img src="${esc(thumb(f.steps[i + 1].imgs[0]))}" alt="">` : ''}<span><small>下一步</small><strong>${esc(stepTitle(f, i + 1))}</strong></span><span class="go">${ic('arrowRight')}</span></a>`
+      : `<div class="next-hint done">${ic('checkCircle')} 這個流程到這裡結束</div>${nextFlow ? `<a class="next-hint" href="${flowHref(nextFlow)}"><span><small>接著看下一個流程</small><strong>${esc(nextFlow.title)}</strong></span><span class="go">${ic('arrowRight')}</span></a>` : ''}`;
 
     let lastCh = -1;
     const film = f.steps.map((s, k) => {
-      const gap = s.ch !== lastCh && k ? '<span class="gap"></span>' : k ? '<span class="arr">→</span>' : '';
+      const gap = s.ch !== lastCh && k ? '<span class="gap"></span>' : k ? `<span class="arr">${ic('arrowRight')}</span>` : '';
       lastCh = s.ch;
       return `${gap}<a href="${flowHref(f, k + 1)}" class="${k === i ? 'on' : ''}" title="${esc(stepTitle(f, k))}"><span class="th">${s.imgs[0] ? `<img src="${esc(thumb(s.imgs[0]))}" alt="" loading="lazy">` : ''}</span>${esc(stepNo(f, k))}. ${esc(plain(s.title))}</a>`;
     }).join('');
@@ -186,7 +208,7 @@
 
     return `<div class="wrap">${crumbs}
       <div class="v-head"><h1>${esc(f.title)}</h1><span class="count">${count}</span>
-        <div class="acts"><button class="btn" type="button" data-copy="${flowHref(f, i + 1)}">🔗 複製這一步的連結</button><a class="btn" href="${flowHref(f)}/all">▦ 全部畫面</a>${overview}</div></div>
+        <div class="acts"><button class="btn" type="button" data-copy="${flowHref(f, i + 1)}">${ic('link')} 複製這一步的連結</button><a class="btn" href="${flowHref(f)}/all">${ic('grid')} 全部畫面</a>${overview}</div></div>
       ${f.intro.length && i === 0 ? `<div class="v-intro prose">${blocksHTML(f.intro)}</div>` : ''}
       <div class="viewer" id="viewer">
         <div class="stage" id="stage">
@@ -194,7 +216,7 @@
             <a class="arrow prev${prev ? '' : ' off'}" href="${prev || '#'}" aria-label="上一步">‹</a>
             ${im ? `<div class="shot ${shotMode(im)}" style="background-image:url('${esc(thumb(im))}')">
               <button class="zoom-btn" type="button" data-zoom="${esc(im.src)}" data-cap="${esc(alt)}" aria-label="放大畫面：${esc(alt)}"><img id="shot-img" src="${esc(im.src)}" alt="${esc(alt)}"${im.w ? ` width="${im.w}" height="${im.h}"` : ''} decoding="async"></button>
-              ${shotMode(im) === 'long' ? '<span class="long-hint">↓ 長截圖，可以往下捲</span>' : ''}</div>` : '<div class="shot none">這一步沒有截圖</div>'}
+              ${shotMode(im) === 'long' ? `<span class="long-hint">${ic('arrowDown')} 長截圖，可以往下捲</span>` : ''}</div>` : '<div class="shot none">這一步沒有截圖</div>'}
             <a class="arrow next${next ? '' : ' off'}" href="${next || '#'}" aria-label="下一步">›</a>
           </div>
           ${st.imgs.length > 1 ? `<div class="alts">${st.imgs.map((m, k) => `<a href="${flowHref(f, i + 1)}/${k}" class="${m === im ? 'on' : ''}" title="${esc(m.caption || `第 ${k + 1} 張`)}"><img src="${esc(thumb(m))}" alt=""></a>`).join('')}</div>` : ''}
@@ -224,7 +246,7 @@
   /* ---------- 看畫面找問題 ---------- */
   function viewLookup(sel) {
     const ls = lookupsInCh();
-    if (!ls.length) return '<div class="wrap"><div class="empty"><div class="big">🔍</div>這個通路目前沒有可以對照的畫面</div></div>';
+    if (!ls.length) return `<div class="wrap"><div class="empty"><div class="big">${ic('search')}</div>這個通路目前沒有可以對照的畫面</div></div>`;
     const k = Math.min(Math.max(sel, 0), ls.length - 1);
     const l = ls[k];
     const f = flows.find((x) => x.id === l.flow);
@@ -232,13 +254,13 @@
       ? `<div class="kv cause"><b>原因</b><p>${inline(l.cause)}</p></div><div class="kv fix"><b>怎麼處理</b><p>${inline(l.fix)}</p></div>`
       : `<div class="prose">${blocksHTML(l.body)}</div>`;
     return `<div class="wrap">
-      <div class="hero"><h1>🔍 看畫面找問題</h1><p>請用戶傳截圖，或問他畫面上的標題，點選一樣的畫面就能看到原因和處理方式。</p></div>
+      <div class="hero"><h1>${ic('search')} 看畫面找問題</h1><p>請用戶傳截圖，或問他畫面上的標題，點選一樣的畫面就能看到原因和處理方式。</p></div>
       <div class="e-layout">
         <div class="e-grid">${ls.map((x, j) => `<a class="e-tile${j === k ? ' on' : ''}" href="#/e/${j}"><span class="th"><img src="${esc(thumb(x.img))}" alt="" loading="lazy"></span>${esc(x.title)}</a>`).join('')}</div>
         <div class="e-detail" id="e-detail"><button class="shot" type="button" data-zoom="${esc(l.img.src)}" data-cap="${esc(l.title)}" aria-label="放大畫面"><img src="${esc(l.img.src)}" alt="${esc(l.title)}"></button><div>
           <div class="crumbs" style="margin:0">${chBadge(f.channel)}<span>${esc(f.title)}</span></div>
           <h2>${esc(l.title)}</h2>${body}
-          <a class="btn" href="${flowHref(f, l.pos)}" style="margin-top:8px">在「${esc(f.title)}」流程中查看 →</a>
+          <a class="btn" href="${flowHref(f, l.pos)}" style="margin-top:8px">在「${esc(f.title)}」流程中查看 ${ic('arrowRight')}</a>
         </div></div>
       </div>${footer()}</div>`;
   }
@@ -324,13 +346,13 @@
     const item = (d) => {
       const label = d.kind === 'step' ? `${stepNo(d.f, d.k)}. ${d.title}` : d.title;
       const where = d.kind === 'step' ? `${esc(d.f.title)} › 第 ${d.k + 1} 個畫面` : d.kind === 'faq' ? `${esc(d.f.title)} › 常見問題` : `${esc(d.f.guide)} › 整個流程`;
-      return `<a class="r-item" href="${d.href}">${d.img ? `<span class="r-thumb"><img src="${esc(thumb(d.img))}" alt="" loading="lazy"></span>` : `<span class="r-thumb icon">${d.kind === 'faq' ? '💬' : '📄'}</span>`}
+      return `<a class="r-item" href="${d.href}">${d.img ? `<span class="r-thumb"><img src="${esc(thumb(d.img))}" alt="" loading="lazy"></span>` : `<span class="r-thumb icon">${ic(d.kind === 'faq' ? 'chat' : 'file')}</span>`}
         <span class="r-main"><div class="r-title">${highlight(label, words)}</div><div class="r-path">${chBadge(d.f.channel)}<span>${where}</span></div>
         <div class="r-snip">${highlight(snippet(d.body, words), words)}</div></span></a>`;
     };
     return `<div class="wrap results"><h1>「${esc(q)}」的搜尋結果</h1>
       <div class="hint">${list.length ? `找到 ${list.length} 個相關畫面或流程${chName}` : ''}</div>
-      ${list.length ? list.map(item).join('') : `<div class="empty"><div class="big">🔍</div>找不到相關內容${chName}。<br>換個說法試試看，例如：${QUICK.slice(0, 4).map((x) => `<a href="#/s/${encodeURIComponent(x)}">${esc(x)}</a>`).join('、')}${channel !== 'all' ? '<br><br><button class="btn" type="button" data-ch="all">改搜尋全部通路</button>' : ''}</div>`}
+      ${list.length ? list.map(item).join('') : `<div class="empty"><div class="big">${ic('search')}</div>找不到相關內容${chName}。<br>換個說法試試看，例如：${QUICK.slice(0, 4).map((x) => `<a href="#/s/${encodeURIComponent(x)}">${esc(x)}</a>`).join('、')}${channel !== 'all' ? '<br><br><button class="btn" type="button" data-ch="all">改搜尋全部通路</button>' : ''}</div>`}
       ${footer()}</div>`;
   }
 
@@ -476,7 +498,7 @@
   });
   $('#q').addEventListener('keydown', (e) => { if (e.key === 'Enter' && $('#q').value.trim()) location.hash = `#/s/${encodeURIComponent($('#q').value.trim())}`; });
 
-  const THEMES = [['auto', '◐', '跟隨系統'], ['light', '☀︎', '淺色'], ['dark', '☾', '深色']];
+  const THEMES = [['auto', 'monitor', '跟隨系統'], ['light', 'sun', '淺色'], ['dark', 'moon', '深色']];
   let theme = store.get('uf.theme') || 'auto';
   function applyTheme() {
     if (theme === 'auto') delete document.documentElement.dataset.theme;
@@ -485,7 +507,7 @@
   function renderChannels() {
     const tabs = [{ id: 'all', name: '全部' }, ...D.channels];
     $('#channelbar').innerHTML = `<span class="label">通路</span>${tabs.map((c) => `<button type="button" class="ch-tab" data-ch="${c.id}" aria-pressed="${channel === c.id}">${c.color ? `<span class="ch-dot" style="--ch:${c.color}"></span>` : ''}${esc(c.name)}</button>`).join('')}`
-      + `<div class="theme-seg" role="group" aria-label="外觀"><span class="label">外觀</span>${THEMES.map(([id, icon, name]) => `<button type="button" data-theme-set="${id}" aria-pressed="${theme === id}" title="${name}" aria-label="外觀：${name}"><span aria-hidden="true">${icon}</span><span class="t">${name}</span></button>`).join('')}</div>`;
+      + `<div class="theme-seg" role="group" aria-label="外觀"><span class="label">外觀</span>${THEMES.map(([id, icon, name]) => `<button type="button" data-theme-set="${id}" aria-pressed="${theme === id}" title="${name}" aria-label="外觀：${name}">${ic(icon)}<span class="t">${name}</span></button>`).join('')}</div>`;
   }
 
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
