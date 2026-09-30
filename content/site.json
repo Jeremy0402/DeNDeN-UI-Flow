@@ -1,10 +1,10 @@
 {
   "_說明": "網站設定。新增通路時在 channels 加一筆，教學檔的 channel 要對上這裡的 id。",
-  "title": "DeNDeN UI Flow 圖解",
+  "title": "DeNDeN UI Flow",
   "subtitle": "AmpGO・全支付 充電漫遊操作畫面",
   "channels": [
-    { "id": "ampgo", "name": "AmpGO", "color": "#0A84FF" },
-    { "id": "pxpay", "name": "全支付", "color": "#E8453C" }
+    { "id": "ampgo", "name": "AmpGO", "color": "#0A84FF", "emoji": "⚡" },
+    { "id": "pxpay", "name": "全支付", "color": "#E8453C", "emoji": "🐯" }
   ],
   "guideOrder": ["ampgo-roaming", "ampgo-lottery", "pxpay-roaming"],
 

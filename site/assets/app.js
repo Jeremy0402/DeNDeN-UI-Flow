@@ -49,7 +49,9 @@
   const plain = (runs) => (runs || []).map((r) => r.s).join('');
   const flowHref = (f, pos) => `#/f/${f.gid}/${encodeURIComponent(f.title)}${pos ? `/${pos}` : ''}`;
   const findFlow = (gid, title) => flows.find((f) => f.gid === gid && f.title === title);
-  const chBadge = (id) => { const c = chMap[id]; return c ? `<span class="badge" style="--ch:${c.color}"><span class="ch-dot"></span>${esc(c.name)}</span>` : ''; };
+  // 通路標記：有 emoji 就用 emoji（與其他渲染器一致），沒有才退回色點
+  const chMark = (c) => (c.emoji ? `<span class="ch-emoji" aria-hidden="true">${c.emoji}</span>` : `<span class="ch-dot" style="--ch:${c.color}"></span>`);
+  const chBadge = (id) => { const c = chMap[id]; return c ? `<span class="badge" style="--ch:${c.color}">${chMark(c)}${esc(c.name)}</span>` : ''; };
   const thumb = (im) => (im ? im.th || im.src : '');
   const stepTitle = (f, i) => plain(f.steps[i].title) || (f.steps.length === 1 ? f.title : `第 ${i + 1} 個畫面`);
   const stepNo = (f, i) => f.steps[i].label || String(i + 1);
@@ -506,7 +508,7 @@
   }
   function renderChannels() {
     const tabs = [{ id: 'all', name: '全部' }, ...D.channels];
-    $('#channelbar').innerHTML = `<span class="label">通路</span>${tabs.map((c) => `<button type="button" class="ch-tab" data-ch="${c.id}" aria-pressed="${channel === c.id}">${c.color ? `<span class="ch-dot" style="--ch:${c.color}"></span>` : ''}${esc(c.name)}</button>`).join('')}`
+    $('#channelbar').innerHTML = `<span class="label">通路</span>${tabs.map((c) => `<button type="button" class="ch-tab" data-ch="${c.id}" aria-pressed="${channel === c.id}">${c.color ? chMark(c) : ''}${esc(c.name)}</button>`).join('')}`
       + `<div class="theme-seg" role="group" aria-label="外觀"><span class="label">外觀</span>${THEMES.map(([id, icon, name]) => `<button type="button" data-theme-set="${id}" aria-pressed="${theme === id}" title="${name}" aria-label="外觀：${name}">${ic(icon)}<span class="t">${name}</span></button>`).join('')}</div>`;
   }
 
