@@ -10,7 +10,7 @@
 node scripts/build.mjs
 ```
 
-新增截圖後先產生縮圖（macOS）：`./scripts/make-thumbs.sh`
+新增截圖後先產生縮圖：`node scripts/make-thumbs.mjs`
 
 ## 資料夾
 
@@ -48,3 +48,14 @@ Cloudflare 後台 → Workers & Pages → 建立 → Pages → 連接 GitHub rep
 - Framework preset：None
 - Build command：留空
 - Build output directory：`site`
+
+## 自動同步 Lark（GitHub Actions）
+
+`.github/workflows/sync-lark.yml` 會依知識庫專案相同的時段（平日白天每 20 分鐘、夜間與週末每 3 小時）執行 `scripts/sync-lark.mjs`，抓最新的 AmpGO UI Flow 文件與新圖片，重新建置後只在內容有變動時才 commit，Cloudflare 隨即更新網站。也可以在 GitHub 的 Actions 頁手動按 Run workflow。
+
+需要的設定：
+1. Lark 開發者後台，應用程式開通 `docx:document:readonly`、`drive:drive:readonly`（或 `docs:document.media:download`）權限並發布版本
+2. 把應用程式加為〈AmpGO 充電漫遊 UI Flow〉文件的協作者
+3. 本 repo → Settings → Secrets and variables → Actions，新增 `LARK_APP_ID`、`LARK_APP_SECRET`
+
+目前只自動同步 AmpGO 那份（分欄格式）。全支付與充電抽獎是白板，仍是 `content/guides/` 的人工整理。要同步的文件清單在 `content/lark/sources.json`。

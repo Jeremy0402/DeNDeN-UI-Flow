@@ -1,0 +1,6 @@
+{
+  "_說明": "自動同步要抓的 Lark 雲端文件。file 是存在 content/lark/ 的檔名，imgDoc 是圖片分類資料夾（對應 scripts/build.mjs 的 LARK_DOCS）。",
+  "docs": [
+    { "file": "doc-ampgo.raw.json", "id": "JCQpdZZcmojVijxSpnJlCS8TgKL", "imgDoc": "ampgo" }
+  ]
+}

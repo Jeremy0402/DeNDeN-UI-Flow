@@ -1,0 +1,55 @@
+name: 同步 Lark UI Flow
+
+on:
+  schedule:
+    # GitHub 排程用 UTC；台北時間 = UTC+8。與 AI-Knowledge-Base 相同的時段。
+    - cron: '7,27,47 1-10 * * 1-5'      # 平日台北 09:07–18:47，每 20 分鐘
+    - cron: '17 11,14,17,20,23 * * *'   # 每天台北 19:17、22:17、01:17、04:17、07:17
+    - cron: '17 2,5,8 * * 0,6'          # 週末台北 10:17、13:17、16:17
+  workflow_dispatch: {}                 # 在 GitHub 網頁上可以手動按「Run workflow」立刻同步
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-lark
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 向 Lark 抓取最新文件與圖片
+        env:
+          LARK_APP_ID: ${{ secrets.LARK_APP_ID }}
+          LARK_APP_SECRET: ${{ secrets.LARK_APP_SECRET }}
+        run: |
+          if [ -z "$LARK_APP_ID" ] || [ -z "$LARK_APP_SECRET" ]; then
+            echo "尚未設定 LARK_APP_ID / LARK_APP_SECRET（Settings → Secrets and variables → Actions），略過同步。"
+            exit 0
+          fi
+          node scripts/sync-lark.mjs
+
+      - name: 產生縮圖並重新建置網站資料
+        run: |
+          node scripts/make-thumbs.mjs
+          node scripts/build.mjs --prune
+
+      - name: 只有內容真的變動時才提交
+        run: |
+          git config user.name "lark-sync-bot"
+          git config user.email "actions@github.com"
+          # builtAt 每次都不同，所以只看內容與圖片是否有變，避免每 20 分鐘就產生一次 commit
+          if [ -z "$(git status --porcelain content site/img site/thumbs)" ]; then
+            echo "Lark 內容沒有變動，不提交。"
+            exit 0
+          fi
+          git add -A
+          git commit -m "同步 Lark UI Flow 文件"
+          git push
