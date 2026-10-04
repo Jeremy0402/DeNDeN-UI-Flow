@@ -32,16 +32,26 @@ jobs:
         run: |
           if [ -z "$LARK_APP_ID" ] || [ -z "$LARK_APP_SECRET" ]; then
             echo "尚未設定 LARK_APP_ID / LARK_APP_SECRET（Settings → Secrets and variables → Actions），略過同步。"
+            echo "skip=true" >> "$GITHUB_ENV"
             exit 0
           fi
           node scripts/sync-lark.mjs
 
+      - name: 有新圖片時安裝縮圖工具
+        if: env.skip != 'true'
+        run: |
+          if [ -n "$(git status --porcelain site/img)" ]; then
+            sudo apt-get update -qq && sudo apt-get install -y -qq imagemagick
+          fi
+
       - name: 產生縮圖並重新建置網站資料
+        if: env.skip != 'true'
         run: |
           node scripts/make-thumbs.mjs
           node scripts/build.mjs --prune
 
       - name: 只有內容真的變動時才提交
+        if: env.skip != 'true'
         run: |
           git config user.name "lark-sync-bot"
           git config user.email "actions@github.com"

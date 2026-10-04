@@ -8,14 +8,15 @@ import { fileURLToPath } from 'node:url';
 
 const SITE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'site');
 const has = (cmd) => { try { execFileSync('which', [cmd], { stdio: 'ignore' }); return true; } catch { return false; } };
+const all = fs.readdirSync(path.join(SITE, 'img'), { recursive: true }).filter((f) => /\.(png|jpe?g)$/i.test(f));
+const todo = all.filter((f) => !fs.existsSync(path.join(SITE, 'thumbs', f.replace(/\.\w+$/, '.jpg'))));
+if (!todo.length) { console.log('縮圖都已經有了，略過'); process.exit(0); }
 const tool = has('sips') ? 'sips' : has('magick') ? 'magick' : has('convert') ? 'convert' : null;
 if (!tool) { console.error('找不到 sips 或 ImageMagick，無法產生縮圖'); process.exit(1); }
 
 let n = 0;
-for (const f of fs.readdirSync(path.join(SITE, 'img'), { recursive: true })) {
-  if (!/\.(png|jpe?g)$/i.test(f)) continue;
+for (const f of todo) {
   const out = path.join(SITE, 'thumbs', f.replace(/\.\w+$/, '.jpg'));
-  if (fs.existsSync(out)) continue;
   fs.mkdirSync(path.dirname(out), { recursive: true });
   const src = path.join(SITE, 'img', f);
   if (tool === 'sips') execFileSync('sips', ['-Z', '480', '-s', 'format', 'jpeg', '-s', 'formatOptions', '72', src, '--out', out], { stdio: 'ignore' });
