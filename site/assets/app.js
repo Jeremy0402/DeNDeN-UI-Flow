@@ -109,7 +109,7 @@
 
   /* ---------- 首頁 ---------- */
   const footer = () => `<div class="footer">資料更新時間：${esc(new Date(D.builtAt).toLocaleString('zh-TW', { hour12: false }))}</div>`;
-  const QUICK = ['無法拔槍', '扣款失敗', '發票', '隨插即充', '抽獎', 'QR Code', '優惠券', '錯誤畫面'];
+  const QUICK = ['無法拔槍', '扣款失敗', '發票', '隨插即充', '抽獎', 'QR Code', '折扣券', '錯誤畫面'];
 
   function flowCard(f) {
     const n = f.steps.length;
