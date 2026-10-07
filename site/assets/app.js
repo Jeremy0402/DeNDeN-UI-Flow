@@ -108,7 +108,13 @@
   }
 
   /* ---------- 首頁 ---------- */
-  const footer = () => `<div class="footer">資料更新時間：${esc(new Date(D.builtAt).toLocaleString('zh-TW', { hour12: false }))}</div>`;
+  // 資料更新時間：Lark 內容最後一次有變動的時間（build 時比對內容指紋產生，見 scripts/build.mjs）。
+  // 舊版資料沒有 updatedAt 時退回 builtAt
+  const UPDATED_AT = new Date(D.updatedAt || D.builtAt);
+  const pad2 = (n) => String(n).padStart(2, '0');
+  const fmtDay = (d) => `${pad2(d.getMonth() + 1)}/${pad2(d.getDate())}`;
+  const fmtStamp = (d) => (isNaN(d) ? '未知' : `${fmtDay(d)} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`);
+  const footer = () => `<div class="footer">資料更新於 ${esc(isNaN(UPDATED_AT) ? '未知' : UPDATED_AT.toLocaleString('zh-TW', { hour12: false }))}（Lark 內容最後一次變動的時間）</div>`;
   const QUICK = ['無法拔槍', '扣款失敗', '發票', '隨插即充', '抽獎', 'QR Code', '折扣券', '錯誤畫面'];
 
   function flowCard(f) {
@@ -500,6 +506,48 @@
   });
   $('#q').addEventListener('keydown', (e) => { if (e.key === 'Enter' && $('#q').value.trim()) location.hash = `#/s/${encodeURIComponent($('#q').value.trim())}`; });
 
+  /* ---------- 近期更新（比照 AI-Knowledge-Base 的公告膠囊） ----------
+     公告由 scripts/build.mjs 在 Lark 內容有變動時自動比對產生，這裡只負責顯示。
+     已讀紀錄存在這台瀏覽器；超過 NOTICE_FRESH_DAYS 天的公告仍會列出，但不算未讀，
+     避免第一次打開的人看到一長串紅點。 */
+  const NOTICES = D.notices || [];
+  const NOTICE_FRESH_DAYS = 14;
+  const readNotices = new Set((() => { try { return JSON.parse(store.get('uf.notices.read') || '[]'); } catch { return []; } })());
+  const isUnread = (n) => !readNotices.has(n.id) && Date.now() - new Date(n.at) < NOTICE_FRESH_DAYS * 864e5;
+  const saveRead = () => store.set('uf.notices.read', JSON.stringify([...readNotices].filter((id) => NOTICES.some((n) => n.id === id))));
+
+  function renderNotices() {
+    const unread = NOTICES.filter(isUnread).length;
+    $('#notices-badge').hidden = !unread;
+    $('#notices-badge').textContent = unread > 9 ? '9+' : String(unread);
+    $('#notices-chip').classList.toggle('has-unread', unread > 0);
+    $('#notices-markall').hidden = !unread;
+    $('#notices-sync').textContent = `資料更新於 ${fmtStamp(UPDATED_AT)}，內容有變動時才會更新這個時間。`;
+    let lastDay = '';
+    $('#notices-list').innerHTML = NOTICES.length ? NOTICES.map((n) => {
+      const day = fmtDay(new Date(n.at));
+      const head = day !== lastDay ? `<div class="notice-date">${esc(day)}</div>` : '';
+      lastDay = day;
+      return `${head}<a class="notice-item${isUnread(n) ? ' unread' : ''}" href="${esc(n.href)}" data-notice="${esc(n.id)}"><span class="notice-dot"></span>
+        <span class="notice-body"><span class="notice-row1"><span class="notice-tag tag-${n.tag === '新增' ? 'new' : 'mod'}">${esc(n.tag)}</span><span class="notice-title">${esc(n.title)}</span></span>
+        <span class="notice-note">${esc(n.note)}</span></span><span class="notice-go">${ic('arrowRight')}</span></a>`;
+    }).join('') : '<div class="notices-empty">目前沒有更新紀錄。<br>之後 Lark 內容有變動時，會自動列在這裡。</div>';
+  }
+  function toggleNotices(open = $('#notices-panel').hidden) {
+    $('#notices-panel').hidden = !open;
+    $('#notices-chip').setAttribute('aria-expanded', String(open));
+    if (open) renderNotices();
+  }
+  $('#notices-chip').addEventListener('click', (e) => { e.stopPropagation(); toggleNotices(); });
+  $('#notices-panel').addEventListener('click', (e) => {
+    e.stopPropagation();
+    const item = e.target.closest('[data-notice]');
+    if (item) { readNotices.add(item.dataset.notice); saveRead(); renderNotices(); toggleNotices(false); }
+  });
+  $('#notices-markall').addEventListener('click', () => { NOTICES.forEach((n) => readNotices.add(n.id)); saveRead(); renderNotices(); });
+  document.addEventListener('click', () => { if (!$('#notices-panel').hidden) toggleNotices(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#notices-panel').hidden) { toggleNotices(false); $('#notices-chip').focus(); } });
+
   const THEMES = [['auto', 'monitor', '跟隨系統'], ['light', 'sun', '淺色'], ['dark', 'moon', '深色']];
   let theme = store.get('uf.theme') || 'auto';
   function applyTheme() {
@@ -517,6 +565,8 @@
   applyTheme();
   $('#brand-title').textContent = D.site.title;
   $('#brand-sub').textContent = D.site.subtitle || '';
+  $('#sync-text').textContent = `資料更新於 ${fmtStamp(UPDATED_AT)}`;
+  renderNotices();
   renderChannels();
   window.addEventListener('hashchange', render);
   render();

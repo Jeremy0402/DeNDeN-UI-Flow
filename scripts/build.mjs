@@ -14,6 +14,8 @@
    ========================================================================= */
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -462,9 +464,86 @@ for (const key of new Set(flows.map((f) => f.overview).filter(Boolean))) {
   overviews[key] = { src: `flows/${key}.svg`, w: Number(w), h: Number(h) };
 }
 
+/* ---------- 資料更新時間與近期更新公告（比照 AI-Knowledge-Base） ----------
+   builtAt 每次 build 都會變，不能拿來告訴使用者「內容什麼時候更新」。
+   這裡把流程內容算成指紋，跟上一版 site/data/flows.js 比：
+   - 指紋相同 → 沿用上一版的 updatedAt 與公告（只是重新 build，內容沒變）
+   - 指紋不同 → updatedAt 改成現在，並逐條流程比對，產生「新增／異動」公告
+   第一次（上一版沒有指紋）沒有比對基準，不產生公告，時間取 content/ 最後一次 commit。 */
+const MAX_NOTICES = 30;
+const hash = (v) => crypto.createHash('sha1').update(JSON.stringify(v)).digest('hex');
+
+function readPrevData() {
+  try {
+    const raw = fs.readFileSync(path.join(SITE, 'data', 'flows.js'), 'utf8');
+    return JSON.parse(raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1));
+  } catch { return null; }
+}
+function lastContentCommit() {
+  try { return execFileSync('git', ['log', '-1', '--format=%cI', '--', 'content'], { cwd: ROOT, encoding: 'utf8' }).trim() || null; } catch { return null; }
+}
+
+const stepKey = (st, k) => st.id || plain(st.title).trim() || `#${k}`;
+const stepSig = (st) => ({ title: plain(st.title), body: hash(st.body), imgs: st.imgs.map((m) => m.src) });
+const stepLabel = (f, k) => `第 ${f.steps[k].label || k + 1} 步「${plain(f.steps[k].title) || `第 ${k + 1} 個畫面`}」`;
+
+function diffFlow(f, prev) {
+  if (!prev) return { tag: '新增', note: f.steps.length ? `新增流程，共 ${f.steps.length} 個畫面。` : '新增說明。', pos: f.steps.length ? 1 : 0 };
+  const prevSteps = new Map(prev.steps.map((st, k) => [stepKey(st, k), st]));
+  const matched = f.steps.map((st, k) => prevSteps.get(stepKey(st, k)));
+  matched.forEach((old, k) => old && prevSteps.delete(stepKey(f.steps[k], k)));
+  // 人工整理的教學沒有 Lark 區塊 id，步驟改名會對不上：同一位置還沒配對的舊步驟，視為同一步改了內容
+  const left = new Set(prevSteps.values());
+  matched.forEach((old, k) => {
+    const same = prev.steps[k];
+    if (!old && !f.steps[k].id && same && left.has(same)) { matched[k] = same; left.delete(same); prevSteps.delete(stepKey(same, k)); }
+  });
+  const added = [], changed = [];
+  f.steps.forEach((st, k) => {
+    const old = matched[k];
+    if (!old) { added.push(k); return; }
+    const a = stepSig(st), b = stepSig(old);
+    const what = [a.title !== b.title || a.body !== b.body ? '說明' : '', a.imgs.join() !== b.imgs.join() ? '截圖' : ''].filter(Boolean);
+    if (what.length) changed.push([k, what.join('、')]);
+  });
+  const parts = [];
+  const list = (ks, fmt) => (ks.length > 3 ? `${ks.slice(0, 3).map(fmt).join('、')} 等 ${ks.length} 處` : ks.map(fmt).join('、'));
+  if (added.length) parts.push(`新增${list(added, (k) => stepLabel(f, k))}`);
+  if (changed.length) parts.push(`${list(changed, ([k, w]) => `${stepLabel(f, k)}${w}`)}已更新`);
+  if (prevSteps.size) parts.push(`移除 ${prevSteps.size} 個畫面`);
+  if (hash([f.intro, f.chapters.map((c) => [c.title, c.intro, c.outro]), f.blocks]) !== hash([prev.intro, prev.chapters.map((c) => [c.title, c.intro, c.outro]), prev.blocks])) parts.push('流程說明已更新');
+  if (hash(f.faq) !== hash(prev.faq)) parts.push('常見問題已更新');
+  if (!parts.length) return null;
+  const first = [...added, ...changed.map(([k]) => k)].sort((x, y) => x - y)[0];
+  return { tag: '異動', note: `${parts.join('；')}。`, pos: first == null ? 0 : first + 1 };
+}
+
+const prevData = readPrevData();
+const contentHash = hash({ flows, lookups });
+let updatedAt, notices;
+if (prevData?.contentHash === contentHash) {
+  updatedAt = prevData.updatedAt;
+  notices = prevData.notices || [];
+} else if (!prevData?.contentHash) {
+  updatedAt = lastContentCommit() || new Date().toISOString();
+  notices = [];
+} else {
+  updatedAt = new Date().toISOString();
+  const prevFlows = new Map(prevData.flows.map((f) => [f.id, f]));
+  const fresh = flows.map((f) => {
+    const d = diffFlow(f, prevFlows.get(f.id));
+    return d && { id: crypto.createHash('sha1').update(`${f.id}|${updatedAt}`).digest('hex').slice(0, 12), at: updatedAt, tag: d.tag, flow: f.id, title: f.title, note: d.note, href: flowHref(f, d.pos) };
+  }).filter(Boolean);
+  notices = [...fresh, ...(prevData.notices || [])].slice(0, MAX_NOTICES);
+  if (fresh.length) console.log(`偵測到 ${fresh.length} 條流程有變動，已寫入近期更新公告。`);
+}
+
 /* ---------- 輸出 ---------- */
 const data = {
   builtAt: new Date().toISOString(),
+  updatedAt,
+  contentHash,
+  notices,
   site: { title: site.title, subtitle: site.subtitle },
   channels: site.channels,
   synonyms: site.synonyms || [],
