@@ -324,9 +324,8 @@
   "doc": "ampgo"
  },
  "ampgo:Lln8bHNxfoNAqBxiKgRlivyNgIe": {
-  "file": "img/ampgo/Lln8bHNxfoNAqBxiKgRlivyNgIe.png",
-  "bytes": 188341,
-  "name": "IMG_7453.jpg",
+  "file": "img/ampgo/Lln8bHNxfoNAqBxiKgRlivyNgIe.jpg",
+  "bytes": 201970,
   "doc": "ampgo"
  },
  "ampgo:IpOUb6fwFo7mEMxG2IplZNTIgug": {
@@ -378,15 +377,13 @@
   "doc": "ampgo"
  },
  "ampgo:TBfQbiADfoh85BxfW8ylcCSagab": {
-  "file": "img/ampgo/TBfQbiADfoh85BxfW8ylcCSagab.png",
-  "bytes": 268255,
-  "name": "IMG_7452.jpg",
+  "file": "img/ampgo/TBfQbiADfoh85BxfW8ylcCSagab.jpg",
+  "bytes": 271294,
   "doc": "ampgo"
  },
  "ampgo:BMm2b7JhOoVPetxtxUHlAqkJgDd": {
-  "file": "img/ampgo/BMm2b7JhOoVPetxtxUHlAqkJgDd.png",
-  "bytes": 204286,
-  "name": "IMG_7450.jpg",
+  "file": "img/ampgo/BMm2b7JhOoVPetxtxUHlAqkJgDd.jpg",
+  "bytes": 219543,
   "doc": "ampgo"
  },
  "ampgo:SKyYbqWqYoaxIJxlFR7lBC5fgjd": {
@@ -498,15 +495,13 @@
   "doc": "ampgo"
  },
  "ampgo:XAQIbcjj3ouGq7xUWHPlUYGGgeg": {
-  "file": "img/ampgo/XAQIbcjj3ouGq7xUWHPlUYGGgeg.png",
-  "bytes": 172508,
-  "name": "IMG_7451.jpg",
+  "file": "img/ampgo/XAQIbcjj3ouGq7xUWHPlUYGGgeg.jpg",
+  "bytes": 196661,
   "doc": "ampgo"
  },
  "ampgo:H8yubkVFLoTnxzxnVX7ljcRhgrh": {
-  "file": "img/ampgo/H8yubkVFLoTnxzxnVX7ljcRhgrh.png",
-  "bytes": 264676,
-  "name": "IMG_7449.jpg",
+  "file": "img/ampgo/H8yubkVFLoTnxzxnVX7ljcRhgrh.jpg",
+  "bytes": 246249,
   "doc": "ampgo"
  },
  "ampgo:K3sbbkAVuoiaZ4xEvApl4U0Bgzf": {
@@ -838,5 +833,15 @@
   "bytes": 322177,
   "name": "",
   "doc": "wb-lottery"
+ },
+ "ampgo:PUhPbUd4DoCBFBxdfUKlii2fgrb": {
+  "file": "img/ampgo/PUhPbUd4DoCBFBxdfUKlii2fgrb.png",
+  "bytes": 2130457,
+  "doc": "ampgo"
+ },
+ "ampgo:CiMubGmTioZzSbxrKK3lvs1tgIc": {
+  "file": "img/ampgo/CiMubGmTioZzSbxrKK3lvs1tgIc.png",
+  "bytes": 1384192,
+  "doc": "ampgo"
  }
 }
