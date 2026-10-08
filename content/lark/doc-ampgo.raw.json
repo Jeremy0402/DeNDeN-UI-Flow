@@ -199,7 +199,8 @@
     "Tt24dkf6CoVIwPxPudylIv7QgPh",
     "PZHZdCOavomxZKxWW4llTdH3gvc",
     "IpXedzirgoB2fcxShUClJvxKgpB",
-    "FPHpdHdXjooVo0xYNDSlJnr8g1d"
+    "FPHpdHdXjooVo0xYNDSlJnr8g1d",
+    "I1Z8dxckGoY9IXxGInXlYwLQgWg"
    ]
   },
   "Bu5gdz19Qo1qz7x4ykKlVTLwgwg": {
@@ -6913,6 +6914,16 @@
    "runs": [
     {
      "s": "可以。在抽獎結果頁點擊【分享好運】複製連結，再傳給朋友即可，詳細步驟請見 (D) 分享好運。"
+    }
+   ]
+  },
+  "I1Z8dxckGoY9IXxGInXlYwLQgWg": {
+   "type": "text",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": ""
     }
    ]
   }
