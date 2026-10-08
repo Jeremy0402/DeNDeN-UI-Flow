@@ -6,6 +6,10 @@
     { "id": "ampgo", "name": "AmpGO", "color": "#0A84FF", "emoji": "⚡" },
     { "id": "pxpay", "name": "全支付", "color": "#E8453C", "emoji": "🐯" }
   ],
+  "_videos": "Lark 文件裡的影片檔名 → YouTube 網址。影片不放在網站上（Cloudflare 單檔 25 MB 上限，repo 也是公開的）。",
+  "videos": {
+    "Screen_Recording_20260206_154135_AmpGO.mp4": "https://youtube.com/shorts/-IaULDPFf8g"
+  },
   "guideOrder": ["ampgo-roaming", "ampgo-lottery", "pxpay-roaming"],
 
   "_troubleshooting": "列在這裡的段落會放到首頁「異常排解」區；其他有截圖步驟的段落放「操作流程」，沒有截圖的放「說明與常見問題」。格式：教學 id/段落標題",

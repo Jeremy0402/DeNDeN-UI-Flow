@@ -56,7 +56,7 @@ jobs:
           git config user.name "lark-sync-bot"
           git config user.email "actions@github.com"
           # builtAt 每次都不同，所以只看內容與圖片是否有變，避免每 20 分鐘就產生一次 commit
-          if [ -z "$(git status --porcelain content site/img site/thumbs site/video)" ]; then
+          if [ -z "$(git status --porcelain content site/img site/thumbs)" ]; then
             echo "Lark 內容沒有變動，不提交。"
             exit 0
           fi

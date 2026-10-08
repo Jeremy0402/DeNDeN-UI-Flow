@@ -473,3 +473,4 @@ mark { background: var(--mark-bg); color: var(--mark-text); border-radius: 3px; 
 .blk-img figcaption, .blk-video figcaption { font-size: 12px; color: var(--sub); margin-top: 6px; }
 .blk-video { margin: 12px 0; max-width: 320px; }
 .blk-video video { width: 100%; max-height: 70vh; border-radius: 14px; background: #000; display: block; }
+.blk-video.yt iframe { display: block; width: 100%; aspect-ratio: 9 / 16; max-height: 70vh; border: 0; border-radius: 14px; background: #000; }

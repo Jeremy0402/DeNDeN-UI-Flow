@@ -87,8 +87,6 @@ const sources = JSON.parse(fs.readFileSync(path.join(ROOT, 'content/lark/sources
 const manifestPath = path.join(ROOT, 'content/images.json');
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 let changed = false;
-const videosPath = path.join(ROOT, 'content/videos.json');
-const MAX_VIDEO = 24 * 1024 * 1024;
 
 for (const src of sources) {
   const file = path.join(ROOT, 'content/lark', src.file);
@@ -122,42 +120,8 @@ for (const src of sources) {
     added++;
   }
 
-  // 影片：下載 mp4 等檔案放到 site/video（Cloudflare 單檔上限 25 MB，超過就略過並提醒）
-  const videos = JSON.parse(fs.existsSync(videosPath) ? fs.readFileSync(videosPath, 'utf8') : '{}');
-  for (const b of Object.values(doc.blocks)) {
-    if (b.type !== 'file' || !b.file?.token || !/\.(mp4|mov|webm)$/i.test(b.file.name || '')) continue;
-    const t = b.file.token;
-    if (videos[t] && fs.existsSync(path.join(ROOT, 'site', videos[t].file))) continue;
-    const res = await api(`/open-apis/drive/v1/medias/${t}/download`, token);
-    if (!res.ok) { console.warn(`⚠ 影片 ${b.file.name} 下載失敗（HTTP ${res.status}）`); continue; }
-    const size = Number(res.headers.get('content-length') || 0);
-    if (size > MAX_VIDEO) { console.warn(`⚠ 影片 ${b.file.name} 有 ${(size / 1048576).toFixed(1)} MB，超過 ${MAX_VIDEO / 1048576} MB 上限，沒有放到網站`); await res.body?.cancel(); continue; }
-    const buf = Buffer.from(await res.arrayBuffer());
-    if (buf.length > MAX_VIDEO) { console.warn(`⚠ 影片 ${b.file.name} 超過上限，略過`); continue; }
-    const ext = b.file.name.split('.').pop().toLowerCase();
-    const rel = `video/${t}.${ext}`;
-    fs.mkdirSync(path.join(ROOT, 'site/video'), { recursive: true });
-    fs.writeFileSync(path.join(ROOT, 'site', rel), buf);
-    videos[t] = { file: rel, name: b.file.name, bytes: buf.length };
-    console.log(`影片 ${b.file.name}（${(buf.length / 1048576).toFixed(1)} MB）已下載`);
-    changed = true;
-  }
-  fs.writeFileSync(videosPath, JSON.stringify(videos, null, 1));
-
-  // 白板：匯出成一張完整的流程圖（需要「查看白板」權限；沒有權限只提醒，不中止）
-  for (const b of Object.values(doc.blocks)) {
-    if (b.type !== 'whiteboard' || !b.token) continue;
-    const key = `${src.imgDoc}:wb-${b.token}`;
-    if (manifest[key] && fs.existsSync(path.join(ROOT, 'site', manifest[key].file))) continue;
-    const res = await api(`/open-apis/board/v1/whiteboards/${b.token}/download_as_image`, token);
-    const buf = Buffer.from(await res.arrayBuffer());
-    if (!res.ok || !sniff(buf)) { console.warn(`⚠ 白板 ${b.token} 匯出失敗（HTTP ${res.status}）：${buf.subarray(0, 120).toString()}`); continue; }
-    const rel = `img/${src.imgDoc}/wb-${b.token}.${sniff(buf)}`;
-    fs.writeFileSync(path.join(ROOT, 'site', rel), buf);
-    manifest[key] = { file: rel, bytes: buf.length, name: '白板流程圖', doc: src.imgDoc };
-    console.log(`白板 ${b.token} 已匯出成圖片`);
-    changed = true;
-  }
+  // 影片不下載（改放 YouTube，在 content/site.json 的 videos 對應）；
+  // 白板不匯出（白板上常有內部註記，整張放上公開網站會外流，需要的畫面請另外截圖放進文件）
 
   const next = JSON.stringify(doc, null, 1);
   // 公開 repo：不留公司網域與編輯者資訊

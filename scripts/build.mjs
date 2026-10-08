@@ -27,7 +27,8 @@ const warn = (msg) => warnings.push(msg);
 
 const site = readJSON(content('site.json'));
 const manifest = readJSON(content('images.json'));
-const videos = fs.existsSync(content('videos.json')) ? readJSON(content('videos.json')) : {};
+const videoLinks = site.videos || {};
+const youtubeId = (url) => (String(url || '').match(/(?:youtu\.be\/|youtube\.com\/(?:shorts\/|watch\?v=|embed\/))([\w-]{11})/) || [])[1] || null;
 
 /* ---------- 來自 Lark 自動轉換的文件 ---------- */
 const LARK_DOCS = [
@@ -265,26 +266,27 @@ function convertLarkDoc(spec) {
         i++; continue;
       }
 
-      // 影片：同步程式有下載的就放上網站；PDF 等其他附件不搬，緊接著的「（檔案較大…）」說明一起略過
+      // 影片：對照 content/site.json 的 videos 換成 YouTube；PDF 等附件不搬，緊接著的「（檔案較大…）」說明一起略過
       if (b.type === 'view' || b.type === 'file') {
         const file = b.type === 'file' ? b.file : B[(b.children || [])[0]]?.file;
-        const vid = file && videos[file.token];
-        if (vid && fs.existsSync(path.join(SITE, vid.file))) out.push({ t: 'video', src: vid.file, name: vid.name });
-        else if (file && /\.(mp4|mov|webm)$/i.test(file.name || '')) warn(`${spec.id}：影片「${file.name}」沒有放到網站（尚未同步，或超過 24 MB）`);
+        const yt = file && youtubeId(videoLinks[file.name]);
+        if (yt) out.push({ t: 'youtube', id: yt, name: file.name });
+        else if (file && /\.(mp4|mov|webm)$/i.test(file.name || '')) warn(`${spec.id}：影片「${file.name}」沒有放到網站。請上傳到 YouTube，再把網址加到 content/site.json 的 videos（或直接在 Lark 文件貼 YouTube 連結）`);
         const next = B[ids[i + 1]];
         if (next?.type === 'text' && /^（.*檔案.*）$/.test(plain(next.runs).trim())) i++;
         i++; continue;
       }
 
-      // 白板：有手動放的 SVG 流程圖就用它；否則用同步程式匯出的整張圖片
+      // 白板：只放手動整理、確認過沒有內部註記的 SVG（WHITEBOARDS）；其他白板不上網站
       if (b.type === 'whiteboard') {
         const key = WHITEBOARDS[b.token];
         if (key) out.push({ t: 'flow', key, title: '一張圖看完整流程' });
-        else {
-          const im = img(spec.imgDoc, `wb-${b.token}`, { caption: '完整流程圖' });
-          if (im) out.push({ t: 'img', big: 1, ...im });
-          else warn(`${spec.id}：白板 ${b.token} 沒有對應的流程圖（尚未同步，或應用程式沒有白板讀取權限）`);
-        }
+        i++; continue;
+      }
+
+      // 段落只有一個 YouTube 連結 → 直接嵌入播放器
+      if (b.type === 'text' && youtubeId(text) && /^\S+$/.test(text)) {
+        out.push({ t: 'youtube', id: youtubeId(text) });
         i++; continue;
       }
 

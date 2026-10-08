@@ -98,7 +98,7 @@
         const img = `<img src="${esc(b.big ? b.src : thumb(b))}" alt="${esc(b.caption || '')}"${dims} loading="lazy" decoding="async">`;
         return `<figure class="blk-img${b.big ? ' big' : ''}"><button type="button" data-zoom="${esc(b.src)}" data-cap="${esc(b.caption || '')}" aria-label="放大圖片">${img}</button>${b.caption ? `<figcaption>${esc(b.caption)}</figcaption>` : ''}</figure>`;
       }
-      if (b.t === 'video') return `<figure class="blk-video"><video controls playsinline preload="metadata" src="${esc(b.src)}#t=0.1" aria-label="${esc(b.name)}">你的瀏覽器不支援影片播放，可以<a href="${esc(b.src)}">直接下載</a>。</video><figcaption>實測影片</figcaption></figure>`;
+      if (b.t === 'youtube') return `<figure class="blk-video yt"><iframe src="https://www.youtube-nocookie.com/embed/${esc(b.id)}?rel=0&playsinline=1" title="${esc(b.name || '影片')}" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><figcaption><a href="https://www.youtube.com/shorts/${esc(b.id)}" target="_blank" rel="noopener">在 YouTube 開啟</a></figcaption></figure>`;
       return '';
     }).join('');
   }
