@@ -29,7 +29,32 @@
   ],
 
   "_publicForbidden": "網站資料出現這些字就中止建置，避免內部資訊外流。",
-  "publicForbidden": ["🔒", "對外禁止揭露", "後台", "den-biz", "marketing-admin", "DeNHub", "DenHub", "判斷邏輯", "larksuite.com", "TBC"],
+  "publicForbidden": ["🔒", "對外禁止揭露", "後台", "den-biz", "marketing-admin", "DeNHub", "DenHub", "行銷活動總表", "判斷邏輯", "larksuite.com", "TBC"],
+
+  "_stripPhrases": "Lark 文件提到內部文件名稱時，建置時把這些句子（正規表示式）拿掉，不放上公開網站。",
+  "stripPhrases": ["各期活動期間與獎項，請參考「[^」]*行銷活動總表」。?", "，各期獎項請參考「[^」]*行銷活動總表」"],
+
+  "_stepLayouts": "用編號清單寫成的流程，指定哪些圖片放在哪一步，網站就會變成逐步播放。格式：流程 id → images → 「章節標題|步驟名稱」→ 圖片 token（可加 caption）。圖片 token 看 content/images.json。",
+  "stepLayouts": {
+    "ampgo-roaming/充電抽獎": {
+      "skip": ["^分享頁面範例"],
+      "images": {
+        "(B) 抽獎流程|結束充電": [{ "token": "Bcwhb1F1qoDjXXxffyhl6zTMgsc", "caption": "充電中" }, { "token": "JJPcb5162o7AuzxL7aHlniUMgHF", "caption": "確認結束" }],
+        "(B) 抽獎流程|拔槍完成充電": ["SaxqbFmododrGxx3xJWl2H0ZgEf"],
+        "(B) 抽獎流程|自動抽獎": ["YqehbI3rdoOU6Vxf01TlGEoAgEV"],
+        "(B) 抽獎流程|播放抽獎動畫": ["FVAxbiFaJojk4Wxp2jDlf6hMgab"],
+        "(B) 抽獎流程|折抵當筆訂單": ["LJjDbUZgFoIeEOxoGZHl88lkgvf"],
+        "從付款明細查看|查看折抵明細": ["WSMvbAbLcoRpiNxmOL4ljIwtgbc"],
+        "從付款明細查看|開啟抽獎結果": ["D9qzbIRJqovhEdxNvsLlPrrRg0e"],
+        "從優惠中心查看|切換到折扣券": ["YrRAbgwfnox29RxnzETlU0LDg4b"],
+        "從優惠中心查看|開啟抽獎結果": ["HmXKbG0DLomTg7xM0V1l3Aflg6c"],
+        "(D) 分享好運|開啟抽獎結果": ["LJjDbUZgFoIeEOxoGZHl88lkgvf"],
+        "(D) 分享好運|複製連結": ["T4wlb42nqojntKxDbB8lS8VYgjf"],
+        "(D) 分享好運|分享給朋友": ["SuwObdidYoPot1xDCLtllMbngyh"],
+        "(D) 分享好運|朋友查看": ["FjiibVuyxoxregxt5mLlN7wxgUb", "X0qIbiziVonR7CxYjeHl1NpLgNd", "RGVdbG6axoBgPLxGH4slBGprggc"]
+      }
+    }
+  },
 
   "synonyms": [
     ["拔槍", "拔不出來", "拔不起來", "槍卡住", "拔不掉"],

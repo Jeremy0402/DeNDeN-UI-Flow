@@ -44,6 +44,9 @@ const LARK_DOCS = [
 ];
 
 /* 公開的白板流程圖：白板 token → content/lark/whiteboards/<key>.svg */
+/* 內部文件的名稱不能出現在公開網站：Lark 文件裡有寫到時，建置時把這些句子拿掉（content/site.json 的 stripPhrases，正規表示式） */
+const STRIP = (site.stripPhrases || []).map((p) => new RegExp(p, 'g'));
+
 const WHITEBOARDS = { LrS8wenzNh6HqCbciTflhpxVgPg: 'start' };
 
 /* ---------- 圖片 ---------- */
@@ -129,7 +132,7 @@ function convertLarkDoc(spec) {
 
   const larkRuns = (runs) => (runs || []).map((r) => {
     const a = r.a || {};
-    const o = { s: r.s };
+    const o = { s: STRIP.reduce((t, re) => t.replace(re, ''), r.s) };
     if (a.bold) o.b = 1;
     if (a.textHighlight || a.textHighlightBackground) o.mark = 1;
     if (a.link) {
@@ -239,14 +242,14 @@ function convertLarkDoc(spec) {
       }
 
       // Q1：… 形式的常見問題
-      if (b.type === 'text' && /^Q\d+[：:]/.test(text)) {
+      if (b.type === 'text' && /^Q\d+[.．、：:]/.test(text)) {
         const items = [];
         while (i < ids.length) {
           const c = B[ids[i]];
           if (!c || isEmpty(c)) { i++; continue; }
           if (c.type !== 'text') break;
           const t = plain(c.runs).trim();
-          if (/^Q\d+[：:]/.test(t)) items.push({ q: t.replace(/^Q\d+[：:]\s*/, ''), a: [] });
+          if (/^Q\d+[.．、：:]/.test(t)) items.push({ q: t.replace(/^Q\d+[.．、：:]\s*/, ''), a: [] });
           else items[items.length - 1].a.push({ t: 'p', r: trimRuns(larkRuns(c.runs)) });
           i++;
         }
@@ -281,6 +284,11 @@ function convertLarkDoc(spec) {
       if (b.type === 'whiteboard') {
         const key = WHITEBOARDS[b.token];
         if (key) out.push({ t: 'flow', key, title: '一張圖看完整流程' });
+        else {
+          // 白板沒放上網站時，前面「下圖整理了…」的提示也一起拿掉，不然會變成指著空白的說明
+          if (out.at(-1)?.t === 'tip' && /^下圖/.test(plain(out.at(-1).r))) out.pop();
+          warn(`${spec.id}：白板 ${b.token} 不在 WHITEBOARDS，沒有放到網站（確認沒有內部註記後，匯出 SVG 並加進 WHITEBOARDS 才會顯示）`);
+        }
         i++; continue;
       }
 
@@ -357,6 +365,55 @@ function normalizeCurated(g) {
   return { ...rest, sections: g.sections.map((s) => ({ title: s.title, blocks: s.blocks.map(norm).filter(Boolean) })) };
 }
 
+
+/* ---------- 文章 → 一步一步看 ----------
+   用編號清單寫的流程（「**步驟名稱：**⏎說明」），在 content/site.json 的 stepLayouts 指定後，
+   會像分欄寫法一樣變成可以逐步播放的畫面。
+   - 小標題（h）或單獨一行粗體字＝章節；章節裡每一個「粗體開頭」的編號清單項目＝一個步驟
+   - 截圖在原文是堆在一起的，沒辦法自動對應，所以由 stepLayouts[流程 id].images 指定：
+     "章節標題|步驟名稱": [圖片 token 或 { token, caption }]
+   - skip：開頭符合的段落不放上網站（例如指著已搬走圖片的說明） */
+function articleToSteps(blocks, layout, id) {
+  const pool = new Map();
+  for (const b of blocks) if (b.t === 'img') pool.set(path.basename(b.src).replace(/\.\w+$/, ''), b);
+  const usedTokens = new Set();
+  const skip = (layout.skip || []).map((x) => new RegExp(x));
+  const boldOnly = (b) => b.t === 'p' && b.r.length && b.r.every((r) => r.b);
+  const out = [];
+  let chapter = '';
+  blocks.forEach((b, i) => {
+    if (b.t === 'img') return;
+    if (b.r && skip.some((re) => re.test(plain(b.r)))) return;
+    if (b.t === 'h') { chapter = plain(b.r).trim(); out.push(b); return; }
+    if (boldOnly(b) && blocks[i + 1]?.t === 'ol') { chapter = plain(b.r).trim(); out.push({ t: 'h', sub: true, r: b.r.map(({ b: _b, ...r }) => r) }); return; }
+    if (b.t === 'ol' && b.items.every((it) => it.r[0]?.b)) {
+      const cols = b.items.map((it) => {
+        const boldEnd = it.r.findIndex((r) => !r.b);
+        const title = stripColon(boldEnd < 0 ? it.r : it.r.slice(0, boldEnd));
+        const body = boldEnd < 0 ? [] : trimRuns(it.r.slice(boldEnd));
+        const key = `${chapter}|${plain(title).trim()}`;
+        const imgs = (layout.images?.[key] || []).map((x) => {
+          const t = typeof x === 'string' ? x : x.token;
+          usedTokens.add(t);
+          const im = pool.get(t);
+          if (!im) { warn(`${id}：stepLayouts 的圖片 ${t}（${key}）不在這一段文章裡`); return null; }
+          const { t: _t, ...rest } = im;
+          return typeof x === 'object' && x.caption ? { ...rest, caption: x.caption } : rest;
+        }).filter(Boolean);
+        return { title, body: body.length ? [{ t: 'p', r: body }] : [], imgs };
+      });
+      out.push({ t: 'steps', cols });
+      return;
+    }
+    out.push(b);
+  });
+  for (const t of pool.keys()) if (!usedTokens.has(t)) warn(`${id}：圖片 ${t} 沒有指定要放在哪一步（content/site.json 的 stepLayouts），沒有顯示在網站上`);
+  for (const k of Object.keys(layout.images || {})) {
+    if (!out.some((b) => b.t === 'steps' && b.cols.some((c) => k.endsWith(`|${plain(c.title).trim()}`)))) warn(`${id}：stepLayouts 的「${k}」找不到對應的步驟`);
+  }
+  return out;
+}
+
 /* ---------- 教學段落 → 流程 ---------- */
 const trouble = new Set(site.troubleshooting || []);
 
@@ -366,8 +423,9 @@ function toFlow(g, s) {
   const chapters = [];
   let cur = { title: null, intro: [], cols: [], outro: [] };
   chapters.push(cur);
-  for (const b of s.blocks) {
-    if (b.t === 'h') { cur = { title: plain(b.r), intro: [], cols: [], outro: [] }; chapters.push(cur); continue; }
+  const layout = site.stepLayouts?.[id];
+  for (const b of layout ? articleToSteps(s.blocks, layout, id) : s.blocks) {
+    if (b.t === 'h') { cur = { title: plain(b.r), sub: !!b.sub, intro: [], cols: [], outro: [] }; chapters.push(cur); continue; }
     if (b.t === 'steps') { cur.cols.push(...b.cols); continue; }
     if (b.t === 'faq') { flow.faq.push(...b.items.map((it) => ({ ...it, group: it.group || (cur.title && !/常見問題|FAQ/i.test(cur.title) ? cur.title : undefined) }))); continue; }
     if (b.t === 'flow') { flow.overview = b.key; continue; }
@@ -390,9 +448,11 @@ function toFlow(g, s) {
       if (c.intro.length) pending = pending ? { title: pending.title, intro: [...pending.intro, { t: 'h', r: [{ s: c.title || '' }] }, ...c.intro] } : { title: c.title, intro: c.intro };
       return;
     }
+    // 文章改成步驟時，平行的大章節（(A)、(B)…）各自獨立；只有粗體小標題才併進上一個大章節的標題
+    const apart = layout && pending?.title && c.title && !c.sub;
     const ch = {
-      title: pending && pending.title ? (c.title ? `${pending.title} › ${c.title}` : pending.title) : c.title,
-      intro: pending ? [...pending.intro, ...c.intro] : c.intro,
+      title: apart ? c.title : pending && pending.title ? (c.title ? `${pending.title} › ${c.title}` : pending.title) : c.title,
+      intro: apart ? [{ t: 'h', r: [{ s: pending.title }] }, ...pending.intro, ...c.intro] : pending ? [...pending.intro, ...c.intro] : c.intro,
       outro: c.outro,
       start: flow.steps.length,
     };
