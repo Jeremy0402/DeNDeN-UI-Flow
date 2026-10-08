@@ -93,7 +93,12 @@
       if (b.t === 'ul' || b.t === 'ol') {
         return `<${b.t}${ind}>${b.items.map((it) => `<li${it.n ? ` value="${it.n}"` : ''}>${runsHTML(it.r)}${it.kids ? blocksHTML(it.kids) : ''}</li>`).join('')}</${b.t}>`;
       }
-      if (b.t === 'img') return `<p><img src="${esc(b.src)}" alt="" loading="lazy" style="max-width:280px;border-radius:12px;border:1px solid var(--border)"></p>`;
+      if (b.t === 'img') {
+        const dims = b.w ? ` width="${b.w}" height="${b.h}"` : '';
+        const img = `<img src="${esc(b.big ? b.src : thumb(b))}" alt="${esc(b.caption || '')}"${dims} loading="lazy" decoding="async">`;
+        return `<figure class="blk-img${b.big ? ' big' : ''}"><button type="button" data-zoom="${esc(b.src)}" data-cap="${esc(b.caption || '')}" aria-label="放大圖片">${img}</button>${b.caption ? `<figcaption>${esc(b.caption)}</figcaption>` : ''}</figure>`;
+      }
+      if (b.t === 'video') return `<figure class="blk-video"><video controls playsinline preload="metadata" src="${esc(b.src)}#t=0.1" aria-label="${esc(b.name)}">你的瀏覽器不支援影片播放，可以<a href="${esc(b.src)}">直接下載</a>。</video><figcaption>實測影片</figcaption></figure>`;
       return '';
     }).join('');
   }

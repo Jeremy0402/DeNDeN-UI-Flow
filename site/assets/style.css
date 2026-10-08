@@ -464,3 +464,12 @@ mark { background: var(--mark-bg); color: var(--mark-text); border-radius: 3px; 
   .fcard .strip .more { height: 118px; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+
+/* 文章裡的單張圖片與影片 */
+.blk-img { margin: 12px 0; max-width: 300px; }
+.blk-img.big { max-width: min(100%, 560px); }
+.blk-img button { display: block; padding: 0; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: #fff; cursor: zoom-in; line-height: 0; }
+.blk-img img { width: 100%; height: auto; display: block; }
+.blk-img figcaption, .blk-video figcaption { font-size: 12px; color: var(--sub); margin-top: 6px; }
+.blk-video { margin: 12px 0; max-width: 320px; }
+.blk-video video { width: 100%; max-height: 70vh; border-radius: 14px; background: #000; display: block; }
