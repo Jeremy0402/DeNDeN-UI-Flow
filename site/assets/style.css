@@ -68,9 +68,11 @@ img { max-width: 100%; }
 .ic { width: 1em; height: 1em; flex-shrink: 0; display: inline-block; vertical-align: -.14em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 /* 頁面最上方的提醒小字：不黏住，捲動後就讓出空間 */
-.banner { display: flex; align-items: flex-start; justify-content: center; gap: 6px; padding: 6px 24px; background: var(--header); color: rgba(255, 255, 255, .66); font-size: 12px; line-height: 1.5; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, .08); }
-.banner .ic { font-size: 13px; margin-top: 2px; opacity: .8; }
-@media (max-width: 900px) { .banner { padding: 6px 16px; text-align: left; justify-content: flex-start; font-size: 11.5px; } }
+.banner { display: flex; align-items: flex-start; gap: 6px; max-width: 400px; min-width: 0; flex: 0 1 400px; color: rgba(255, 255, 255, .66); font-size: 11.5px; line-height: 1.45; }
+.banner .ic { font-size: 13px; margin-top: 1px; opacity: .8; }
+/* 頁首放不下時（窄螢幕），提醒改成頁首上方一條不黏住的深色細條 */
+.banner-m { display: none; padding: 6px 16px; background: var(--header); color: rgba(255, 255, 255, .66); font-size: 11.5px; line-height: 1.5; border-bottom: 1px solid rgba(255, 255, 255, .08); }
+@media (max-width: 1200px) { .banner { display: none !important; } .banner-m:not([hidden]) { display: block; } }
 
 /* ---------- 頁首 ---------- */
 .topbar {

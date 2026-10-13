@@ -679,7 +679,7 @@
   applyTheme();
   $('#brand-title').textContent = D.site.title;
   $('#brand-sub').textContent = D.site.subtitle || '';
-  if (D.site.banner) { $('#banner-text').textContent = D.site.banner; $('#banner').hidden = false; }
+  if (D.site.banner) { $('#banner-text').textContent = D.site.banner; $('#banner').hidden = false; $('#banner-m').textContent = D.site.banner; $('#banner-m').hidden = false; }
   $('#sync-text').textContent = `資料更新於 ${fmtStamp(UPDATED_AT)}`;
   renderNotices();
   renderChannels();
