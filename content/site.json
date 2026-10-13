@@ -6,11 +6,13 @@
     { "id": "ampgo", "name": "AmpGO", "color": "#0A84FF", "emoji": "⚡" },
     { "id": "pxpay", "name": "全支付", "color": "#E8453C", "emoji": "🐯" }
   ],
-  "_videos": "Lark 文件裡的影片檔名 → YouTube 網址。影片不放在網站上（Cloudflare 單檔 25 MB 上限，repo 也是公開的）。",
-  "videos": {
-    "Screen_Recording_20260206_154135_AmpGO.mp4": "https://youtube.com/shorts/-IaULDPFf8g"
+  "guideOrder": ["ampgo-roaming", "pxpay-roaming"],
+
+  "_redirects": "舊網址 → 新流程（教學 id 或 教學 id/流程標題）。內容搬家或合併後，舊連結還能打開。",
+  "redirects": {
+    "ampgo-lottery": "ampgo-roaming/充電抽獎",
+    "pxpay-roaming/常見問題": "pxpay-roaming/充電啟動流程"
   },
-  "guideOrder": ["ampgo-roaming", "ampgo-lottery", "pxpay-roaming"],
 
   "_troubleshooting": "列在這裡的段落會放到首頁「異常排解」區；其他有截圖步驟的段落放「操作流程」，沒有截圖的放「說明與常見問題」。格式：教學 id/段落標題",
   "troubleshooting": [
@@ -33,28 +35,6 @@
 
   "_stripPhrases": "Lark 文件提到內部文件名稱時，建置時把這些句子（正規表示式）拿掉，不放上公開網站。",
   "stripPhrases": ["各期活動期間與獎項，請參考「[^」]*行銷活動總表」。?", "，各期獎項請參考「[^」]*行銷活動總表」"],
-
-  "_stepLayouts": "用編號清單寫成的流程，指定哪些圖片放在哪一步，網站就會變成逐步播放。格式：流程 id → images → 「章節標題|步驟名稱」→ 圖片 token（可加 caption）。圖片 token 看 content/images.json。",
-  "stepLayouts": {
-    "ampgo-roaming/充電抽獎": {
-      "skip": ["^分享頁面範例"],
-      "images": {
-        "(B) 抽獎流程|結束充電": [{ "token": "Bcwhb1F1qoDjXXxffyhl6zTMgsc", "caption": "充電中" }, { "token": "JJPcb5162o7AuzxL7aHlniUMgHF", "caption": "確認結束" }],
-        "(B) 抽獎流程|拔槍完成充電": ["SaxqbFmododrGxx3xJWl2H0ZgEf"],
-        "(B) 抽獎流程|自動抽獎": ["YqehbI3rdoOU6Vxf01TlGEoAgEV"],
-        "(B) 抽獎流程|播放抽獎動畫": ["FVAxbiFaJojk4Wxp2jDlf6hMgab"],
-        "(B) 抽獎流程|折抵當筆訂單": ["LJjDbUZgFoIeEOxoGZHl88lkgvf"],
-        "從付款明細查看|查看折抵明細": ["WSMvbAbLcoRpiNxmOL4ljIwtgbc"],
-        "從付款明細查看|開啟抽獎結果": ["D9qzbIRJqovhEdxNvsLlPrrRg0e"],
-        "從優惠中心查看|切換到折扣券": ["YrRAbgwfnox29RxnzETlU0LDg4b"],
-        "從優惠中心查看|開啟抽獎結果": ["HmXKbG0DLomTg7xM0V1l3Aflg6c"],
-        "(D) 分享好運|開啟抽獎結果": ["LJjDbUZgFoIeEOxoGZHl88lkgvf"],
-        "(D) 分享好運|複製連結": ["T4wlb42nqojntKxDbB8lS8VYgjf"],
-        "(D) 分享好運|分享給朋友": ["SuwObdidYoPot1xDCLtllMbngyh"],
-        "(D) 分享好運|朋友查看": ["FjiibVuyxoxregxt5mLlN7wxgUb", "X0qIbiziVonR7CxYjeHl1NpLgNd", "RGVdbG6axoBgPLxGH4slBGprggc"]
-      }
-    }
-  },
 
   "synonyms": [
     ["拔槍", "拔不出來", "拔不起來", "槍卡住", "拔不掉"],

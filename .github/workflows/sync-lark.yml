@@ -37,17 +37,17 @@ jobs:
           fi
           node scripts/sync-lark.mjs
 
-      - name: 有新圖片時安裝縮圖工具
+      - name: 有新圖片時安裝 WebP 轉檔工具
         if: env.skip != 'true'
         run: |
           if [ -n "$(git status --porcelain site/img)" ]; then
-            sudo apt-get update -qq && sudo apt-get install -y -qq imagemagick
+            sudo apt-get update -qq && sudo apt-get install -y -qq webp
           fi
 
-      - name: 產生縮圖並重新建置網站資料
+      - name: 圖片轉 WebP、產生縮圖並重新建置網站資料
         if: env.skip != 'true'
         run: |
-          node scripts/make-thumbs.mjs
+          node scripts/optimize-images.mjs
           node scripts/build.mjs --prune
 
       - name: 只有內容真的變動時才提交

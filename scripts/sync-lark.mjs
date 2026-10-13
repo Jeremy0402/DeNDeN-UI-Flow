@@ -3,7 +3,7 @@
    從 Lark 抓最新的 UI Flow 文件與圖片，更新 content/ 與 site/img/
    需要環境變數 LARK_APP_ID、LARK_APP_SECRET（GitHub Secrets）。
    要抓哪些文件：content/lark/sources.json
-   執行後請接著跑 node scripts/build.mjs --prune
+   執行後請接著跑 node scripts/optimize-images.mjs 與 node scripts/build.mjs --prune
    ========================================================================= */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -106,17 +106,22 @@ for (const src of sources) {
   let added = 0;
   for (const t of tokens) {
     const key = `${src.imgDoc}:${t}`;
-    if (manifest[key] && fs.existsSync(path.join(ROOT, 'site', manifest[key].file))) continue;
+    // 已經有了，或之前判定網站沒用到而刪掉（build --prune 標記 pruned）就不再下載
+    if (manifest[key] && (manifest[key].pruned || fs.existsSync(path.join(ROOT, 'site', manifest[key].file)))) continue;
     const res = await api(`/open-apis/drive/v1/medias/${t}/download`, token);
     if (!res.ok) throw new Error(`下載圖片 ${t} 失敗（HTTP ${res.status}），請確認應用程式有雲文件媒體下載權限`);
     const buf = Buffer.from(await res.arrayBuffer());
     const ext = sniff(buf);
     if (!ext) throw new Error(`圖片 ${t} 格式無法辨識`);
+    const name = Object.values(doc.blocks).find((b) => b.type === 'image' && b.image.token === t)?.image.name;
+    // 同一張圖在文件裡上傳了好幾次：指到已經有的檔案，不重複存
+    const sha1 = crypto.createHash('sha1').update(buf).digest('hex');
+    const same = Object.values(manifest).find((m) => m.sha1 === sha1 && !m.pruned && fs.existsSync(path.join(ROOT, 'site', m.file)));
+    if (same) { manifest[key] = { file: same.file, bytes: same.bytes, name, doc: src.imgDoc, sha1 }; added++; continue; }
     const rel = `img/${src.imgDoc}/${t}.${ext}`;
     fs.mkdirSync(path.dirname(path.join(ROOT, 'site', rel)), { recursive: true });
     fs.writeFileSync(path.join(ROOT, 'site', rel), buf);
-    const name = Object.values(doc.blocks).find((b) => b.type === 'image' && b.image.token === t)?.image.name;
-    manifest[key] = { file: rel, bytes: buf.length, name, doc: src.imgDoc };
+    manifest[key] = { file: rel, bytes: buf.length, name, doc: src.imgDoc, sha1 };
     added++;
   }
 

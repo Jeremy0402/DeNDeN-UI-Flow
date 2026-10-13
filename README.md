@@ -10,15 +10,15 @@
 node scripts/build.mjs
 ```
 
-新增截圖後先產生縮圖：`node scripts/make-thumbs.mjs`
+新增截圖後先整理圖片（合併重複、轉 WebP、產生縮圖；需要 `brew install webp`）：`node scripts/optimize-images.mjs`，再 `node scripts/build.mjs --prune` 刪掉沒用到的圖片
 
 ## 資料夾
 
 ```
-content/site.json          網站標題、通路、哪些流程算「異常排解」、「看畫面找問題」清單、同義詞
-content/guides/*.json      人工整理的教學（白板類文件：全支付、充電抽獎）
-content/lark/              從 Lark 抓下來的 AmpGO 文件區塊與白板
-content/images.json        圖片來源對照
+content/site.json          網站標題、通路、哪些流程算「異常排解」、「看畫面找問題」清單、舊網址轉址、同義詞
+content/lark/              從 Lark 抓下來的 UI Flow 文件（唯一的內容來源：AmpGO、充電抽獎、全支付都在同一份）
+content/guides/*.json      （選用）人工整理的教學；目前沒有，全部改由 Lark 文件自動轉
+content/images.json        圖片來源對照（Lark 圖片 token → site/img 的 WebP 檔）
 scripts/build.mjs          content/ → site/data/flows.js
 site/                      網站本體（Cloudflare Pages 直接部署這個資料夾）
 private/                   內部資料，不進 repo（.gitignore）
@@ -27,12 +27,20 @@ private/                   內部資料，不進 repo（.gitignore）
 ## 內容怎麼寫才能自動轉
 
 照〈⚡️ AmpGO｜充電漫遊 UI Flow〉的寫法：
-1. 一個「標題 1」＝一條流程
-2. 步驟用「分欄」，每欄：**粗體步驟名稱：** ＋說明＋截圖
+1. 一個「標題 1」＝一條流程；標題以「全支付｜」開頭的段落會放到全支付通路（`scripts/build.mjs` 的 `splits`）
+2. 步驟用「分欄」，每欄：**粗體步驟名稱：** ＋說明＋截圖；也可以用「編號清單：**步驟名稱：**＋說明」，每一項下面接截圖
+   - 分欄或附圖編號清單前面，單獨一行的短文字（例如「從付款明細查看」）會變成小章節
 3. 錯誤畫面用「原因：…」「建議：…」格式，會自動進「看畫面找問題」
-4. 💡 開頭＝提示框；「Q1：」開頭＝常見問題；「待更新」之後＝草稿，不上網站
+4. 💡 開頭＝提示框；⚠️ 開頭＝注意框；「Q1：」開頭＝常見問題；「待更新」之後＝草稿，不上網站
+5. 「🎬 影片名稱：YouTube 網址」＝實測影片，網站流程上方會出現「▶ 影片名稱」按鈕
 
-白板無法自動拆成步驟，全支付與抽獎目前是人工整理在 `content/guides/`。
+白板不會放上網站（常有內部註記），需要的畫面請另外截圖放進文件。
+
+## 網站怎麼看
+
+- **逐步看**：一次一個畫面，←／→ 或手機左右滑換步驟，適合第一次學、或陪用戶一步一步操作
+- **整頁看**：所有步驟與說明一次列出，可以 Ctrl+F、每一步「複製說明」或「複製全部步驟」直接貼給用戶（客服常用）
+- 兩種方式會記住上次的選擇；首頁有「最近看過」
 
 ## 新增通路
 
@@ -58,4 +66,4 @@ Cloudflare 後台 → Workers & Pages → 建立 → Pages → 連接 GitHub rep
 2. 把應用程式加為〈AmpGO 充電漫遊 UI Flow〉文件的協作者
 3. 本 repo → Settings → Secrets and variables → Actions，新增 `LARK_APP_ID`、`LARK_APP_SECRET`
 
-目前只自動同步 AmpGO 那份（分欄格式）。全支付與充電抽獎是白板，仍是 `content/guides/` 的人工整理。要同步的文件清單在 `content/lark/sources.json`。
+要同步的文件清單在 `content/lark/sources.json`。同步後會把新圖片轉成 WebP、合併重複圖片，網站沒用到的圖片直接刪除（`images.json` 標記 `pruned`，之後不會再下載）。

@@ -2,7 +2,7 @@
 /* =========================================================================
    把 content/ 的資料轉成網站用的 site/data/flows.js
    執行：node scripts/build.mjs            產生網站資料
-         node scripts/build.mjs --prune    另外把 site/img 裡沒用到的圖片移到 private/（不會進 repo）
+         node scripts/build.mjs --prune    另外刪掉 site/img 裡沒用到的圖片（原圖都在 Lark）
 
    資料來源
    - content/lark/doc-*.raw.json   Lark 雲端文件的區塊（分欄＋截圖格式，可自動轉成步驟）
@@ -27,6 +27,7 @@ const warn = (msg) => warnings.push(msg);
 
 const site = readJSON(content('site.json'));
 const manifest = readJSON(content('images.json'));
+let manifestDirty = false;
 const videoLinks = site.videos || {};
 const youtubeId = (url) => (String(url || '').match(/(?:youtu\.be\/|youtube\.com\/(?:shorts\/|watch\?v=|embed\/))([\w-]{11})/) || [])[1] || null;
 
@@ -40,6 +41,10 @@ const LARK_DOCS = [
     title: '充電漫遊',
     icon: '⚡️',
     summary: '從找站、開通、掃碼充電到訂單、發票、優惠與常見異常排除。',
+    // 同一份 Lark 文件裡、標題以 prefix 開頭的段落，拆成另一個通路的教學（網址沿用拆出來的 id，標題去掉 prefix）
+    splits: [
+      { prefix: '全支付｜', id: 'pxpay-roaming', channel: 'pxpay', title: '充電漫遊', icon: '🐯', summary: '在全支付 App 點【電動車充電】找站、掃碼、充電到付款的完整流程。' },
+    ],
   },
 ];
 
@@ -47,7 +52,7 @@ const LARK_DOCS = [
 /* 內部文件的名稱不能出現在公開網站：Lark 文件裡有寫到時，建置時把這些句子拿掉（content/site.json 的 stripPhrases，正規表示式） */
 const STRIP = (site.stripPhrases || []).map((p) => new RegExp(p, 'g'));
 
-const WHITEBOARDS = { LrS8wenzNh6HqCbciTflhpxVgPg: 'start' };
+const WHITEBOARDS = {};
 
 /* ---------- 圖片 ---------- */
 function imageSize(rel) {
@@ -57,21 +62,43 @@ function imageSize(rel) {
     fs.readSync(fd, b, 0, 24, 0);
     fs.closeSync(fd);
     if (b.readUInt32BE(0) === 0x89504e47) return [b.readUInt32BE(16), b.readUInt32BE(20)];
-  } catch { /* 非 PNG 或讀不到就不給尺寸 */ }
+    if (b.toString('ascii', 0, 4) === 'RIFF' && b.toString('ascii', 8, 12) === 'WEBP') {
+      const fd2 = fs.openSync(path.join(SITE, rel), 'r');
+      const c = Buffer.alloc(30);
+      fs.readSync(fd2, c, 0, 30, 0);
+      fs.closeSync(fd2);
+      const kind = c.toString('ascii', 12, 16);
+      if (kind === 'VP8X') return [1 + c.readUIntLE(24, 3), 1 + c.readUIntLE(27, 3)];
+      if (kind === 'VP8 ') return [c.readUInt16LE(26) & 0x3fff, c.readUInt16LE(28) & 0x3fff];
+      if (kind === 'VP8L') { const v = c.readUInt32LE(21); return [1 + (v & 0x3fff), 1 + ((v >> 14) & 0x3fff)]; }
+    }
+  } catch { /* 讀不到就不給尺寸 */ }
   return [undefined, undefined];
 }
 
 const usedImages = new Set();
 function img(doc, token, extra = {}) {
   const m = manifest[`${doc}:${token}`];
+  if (m?.pruned) {
+    // 之前沒用到、已經刪掉的圖片，現在文件又用到了：拿掉標記，下次同步會重新下載
+    delete m.pruned; manifestDirty = true;
+    warn(`圖片 ${doc}:${token} 先前沒用到已刪除，現在文件又用到了，下次同步 Lark 時會重新下載`);
+    return null;
+  }
   if (!m || !fs.existsSync(path.join(SITE, m.file))) { warn(`找不到圖片 ${doc}:${token}`); return null; }
   usedImages.add(m.file);
   const [w, h] = imageSize(m.file);
-  const thumb = `thumbs/${m.file.replace(/^img\//, '').replace(/\.\w+$/, '.jpg')}`;
   const out = { src: m.file, w, h };
-  if (fs.existsSync(path.join(SITE, thumb))) out.th = thumb;
+  const thumb = thumbOf(m.file);
+  if (thumb) out.th = thumb;
   for (const [k, v] of Object.entries(extra)) if (v !== undefined && v !== null && v !== '') out[k] = v;
   return out;
+}
+
+// 縮圖：site/thumbs/ 底下同名的 .webp（新）或 .jpg（舊）
+function thumbOf(file) {
+  const base = `thumbs/${file.replace(/^img\//, '').replace(/\.\w+$/, '')}`;
+  return ['.webp', '.jpg'].map((x) => base + x).find((t) => fs.existsSync(path.join(SITE, t))) || null;
 }
 
 /* ---------- 文字 ---------- */
@@ -144,6 +171,7 @@ function convertLarkDoc(spec) {
     return o;
   });
   const isEmpty = (b) => !b || ((b.type === 'text') && !plain(b.runs).trim() && !(b.children || []).length);
+  const nextFilled = (ids, i) => { let j = i + 1; while (j < ids.length && isEmpty(B[ids[j]])) j++; return ids[j]; };
   const isPlaceholder = (b) => b.type === 'text' && /^【[A-Z]?】$/.test(plain(b.runs).trim());
   const markOwner = (id, o) => { owner[id] = o; for (const c of B[id]?.children || []) markOwner(c, o); };
 
@@ -161,10 +189,13 @@ function convertLarkDoc(spec) {
     return { t: ordered ? 'ol' : 'ul', items };
   }
 
-  function stepFromColumn(colId, ctx) {
-    const kids = (B[colId].children || []).map((id) => B[id] && { ...B[id], id }).filter((b) => b && !isEmpty(b));
+  const stepFromColumn = (colId, ctx) => stepFromKids(colId, (B[colId].children || []).map((id) => B[id] && { ...B[id], id }).filter((b) => b && !isEmpty(b)), ctx);
+
+  // 一個步驟＝一組區塊（分欄的內容，或「編號清單項目＋後面的截圖」）
+  function stepFromKids(colId, kids, ctx) {
     if (!kids.length || kids.every(isPlaceholder)) return null;
-    markOwner(colId, { sec: ctx.sec, col: colId });
+    for (const k of kids) markOwner(k.id, { sec: ctx.sec, col: colId });
+    owner[colId] = { sec: ctx.sec, col: colId };
     const imgs = kids.filter((k) => k.type === 'image').map((k) => img(spec.imgDoc, k.image.token)).filter(Boolean);
     const rest = kids.filter((k) => k.type !== 'image');
     const col = { id: colId, title: null, body: [], imgs };
@@ -225,6 +256,20 @@ function convertLarkDoc(spec) {
         const real = cols.filter((c) => !isTipOnly(c));
         if (real.length) out.push({ t: 'steps', cols: real });
         out.push(...cols.filter(isTipOnly).flatMap((c) => c.body));
+        continue;
+      }
+
+      // 編號清單、每一項後面接著截圖（「**步驟名稱：**⏎說明」＋圖）→ 跟分欄一樣變成一步一步的畫面
+      if (b.type === 'ordered' && !ind && B[nextFilled(ids, i)]?.type === 'image') {
+        const cols = [];
+        while (i < ids.length && B[ids[i]]?.type === 'ordered') {
+          const kids = [{ ...B[ids[i]], id: ids[i] }];
+          const head = ids[i++];
+          while (i < ids.length && (B[ids[i]]?.type === 'image' || isEmpty(B[ids[i]]))) { if (B[ids[i]]?.type === 'image') kids.push({ ...B[ids[i]], id: ids[i] }); i++; }
+          const step = stepFromKids(head, kids, ctx);
+          if (step) cols.push(step);
+        }
+        if (cols.length) out.push({ t: 'steps', cols });
         continue;
       }
 
@@ -292,9 +337,18 @@ function convertLarkDoc(spec) {
         i++; continue;
       }
 
-      // 段落只有一個 YouTube 連結 → 直接嵌入播放器
-      if (b.type === 'text' && youtubeId(text) && /^\S+$/.test(text)) {
-        out.push({ t: 'youtube', id: youtubeId(text) });
+      // 段落只有一個 YouTube 連結，或「🎬 影片名稱：網址」→ 嵌入播放器
+      if (b.type === 'text' && youtubeId(text) && (/^\S+$/.test(text) || /^🎬/.test(text))) {
+        const name = text.replace(/^🎬\s*/, '').replace(/https?:\/\/\S+/, '').replace(/[：:\s]+$/, '').trim();
+        out.push({ t: 'youtube', id: youtubeId(text), ...(name ? { name } : {}) });
+        i++; continue;
+      }
+
+      // 單獨一行的短文字、下一個區塊就是步驟（分欄或附截圖的編號清單）→ 當成小標題（例如「從付款明細查看」）
+      const nb = B[nextFilled(ids, i)];
+      if (b.type === 'text' && !ind && text.length <= 14 && !/[。，：:！？!?]/.test(text) && !/^[💡⚠🎬]/u.test(text) && !(b.children || []).length
+        && (nb?.type === 'grid' || (nb?.type === 'ordered' && B[nextFilled(ids, ids.indexOf(nextFilled(ids, i)))]?.type === 'image'))) {
+        out.push({ t: 'h', sub: true, r: trimRuns(larkRuns(b.runs)) });
         i++; continue;
       }
 
@@ -302,6 +356,7 @@ function convertLarkDoc(spec) {
         const r = trimRuns(larkRuns(b.runs));
         const blk = { t: 'p', r };
         if (/^💡/.test(text)) { blk.t = 'tip'; r[0].s = r[0].s.replace(/^💡\s*/, ''); }
+        else if (/^⚠️?/.test(text)) { blk.t = 'warn'; r[0].s = r[0].s.replace(/^⚠️?\s*/, ''); }
         if (ind) blk.ind = ind;
         out.push(blk);
         if ((b.children || []).length) out.push(...convertSeq(b.children, ctx, ind + 1));
@@ -326,12 +381,15 @@ function convertLarkDoc(spec) {
       markOwner(id, { sec: sections.at(-1).title });
     }
   }
-  const { file, imgDoc, ...meta } = spec;
-  return {
-    ...meta,
-    sections: sections.map((s) => ({ title: s.title, blocks: convertSeq(s.ids, { sec: s.title }) })),
-    owner, titleCol,
-  };
+  const { file, imgDoc, splits = [], ...meta } = spec;
+  const converted = sections.map((s) => ({ title: s.title, blocks: convertSeq(s.ids, { sec: s.title }) }));
+  const splitOf = (s) => splits.find((x) => s.title.startsWith(x.prefix));
+  const main = { ...meta, doc: file, sections: converted.filter((s) => !splitOf(s)), owner, titleCol };
+  const extra = splits.map(({ prefix, ...m }) => ({
+    ...m, doc: file, owner, titleCol,
+    sections: converted.filter((s) => splitOf(s)?.prefix === prefix).map((s) => ({ ...s, title: s.title.slice(prefix.length).trim(), larkTitle: s.title })),
+  })).filter((g) => g.sections.length);
+  return [main, ...extra];
 }
 
 /* ---------- 人工整理的教學 ---------- */
@@ -419,16 +477,25 @@ const trouble = new Set(site.troubleshooting || []);
 
 function toFlow(g, s) {
   const id = `${g.id}/${s.title}`;
-  const flow = { id, gid: g.id, channel: g.channel, guide: g.title, icon: g.icon, title: s.title, intro: [], chapters: [], steps: [], faq: [], overview: null, blocks: null };
+  const flow = { id, gid: g.id, channel: g.channel, guide: g.title, icon: g.icon, title: s.title, intro: [], chapters: [], steps: [], faq: [], videos: [], overview: null, blocks: null };
+  if (s.larkTitle) flow.larkTitle = s.larkTitle;
   const chapters = [];
   let cur = { title: null, intro: [], cols: [], outro: [] };
   chapters.push(cur);
   const layout = site.stepLayouts?.[id];
+  let major = null;
   for (const b of layout ? articleToSteps(s.blocks, layout, id) : s.blocks) {
-    if (b.t === 'h') { cur = { title: plain(b.r), sub: !!b.sub, intro: [], cols: [], outro: [] }; chapters.push(cur); continue; }
+    if (b.t === 'h') {
+      const t = plain(b.r);
+      if (!b.sub) major = t;
+      cur = { title: b.sub && major && !layout ? `${major} › ${t}` : t, sub: !!b.sub, intro: [], cols: [], outro: [] };
+      chapters.push(cur); continue;
+    }
     if (b.t === 'steps') { cur.cols.push(...b.cols); continue; }
     if (b.t === 'faq') { flow.faq.push(...b.items.map((it) => ({ ...it, group: it.group || (cur.title && !/常見問題|FAQ/i.test(cur.title) ? cur.title : undefined) }))); continue; }
     if (b.t === 'flow') { flow.overview = b.key; continue; }
+    // 有步驟的流程：影片統一放在流程上方的「實測影片」，不夾在步驟說明裡
+    if (b.t === 'youtube') { flow.videos.push({ id: b.id, name: b.name || null }); continue; }
     (cur.cols.length ? cur.outro : cur.intro).push(b);
   }
 
@@ -437,6 +504,7 @@ function toFlow(g, s) {
   if (!hasSteps) {
     // 沒有截圖步驟的段落（規則、說明、FAQ）直接當文章顯示
     flow.blocks = s.blocks.filter((b) => b.t !== 'faq' && b.t !== 'flow');
+    flow.videos = [];
     return flow;
   }
 
@@ -449,7 +517,8 @@ function toFlow(g, s) {
       return;
     }
     // 文章改成步驟時，平行的大章節（(A)、(B)…）各自獨立；只有粗體小標題才併進上一個大章節的標題
-    const apart = layout && pending?.title && c.title && !c.sub;
+    const lettered = (t) => /^[(（][A-Z][)）]/.test(t || '');
+    const apart = pending?.title && c.title && ((layout && !c.sub) || (lettered(pending.title) && lettered(c.title)));
     const ch = {
       title: apart ? c.title : pending && pending.title ? (c.title ? `${pending.title} › ${c.title}` : pending.title) : c.title,
       intro: apart ? [{ t: 'h', r: [{ s: pending.title }] }, ...pending.intro, ...c.intro] : pending ? [...pending.intro, ...c.intro] : c.intro,
@@ -465,8 +534,8 @@ function toFlow(g, s) {
 }
 
 /* ---------- 組合 ---------- */
-const larkGuides = LARK_DOCS.map(convertLarkDoc);
-const curated = fs.readdirSync(content('guides')).filter((f) => f.endsWith('.json')).map((f) => normalizeCurated(readJSON(content('guides', f))));
+const larkGuides = LARK_DOCS.flatMap(convertLarkDoc);
+const curated = fs.existsSync(content('guides')) ? fs.readdirSync(content('guides')).filter((f) => f.endsWith('.json')).map((f) => normalizeCurated(readJSON(content('guides', f)))) : [];
 const order = site.guideOrder || [];
 const guides = [...larkGuides, ...curated].sort((a, b) => {
   const ia = order.indexOf(a.id), ib = order.indexOf(b.id);
@@ -488,14 +557,15 @@ function resolveRefs(node, g) {
       warn(`${g.id}：Lark 原文件中「${node.s.trim()}」的連結已失效（目標區塊不存在）${col ? '，網站已改連到同名步驟；建議在 Lark 重新設定連結' : ''}`);
       if (col) o = { col };
     }
-    const f = o && flows.find((x) => x.gid === g.id && (o.col ? x.steps.some((st) => st.id === o.col) : x.title === o.sec));
+    const f = o && flows.find((x) => x.doc === g.doc && (o.col ? x.steps.some((st) => st.id === o.col) : (x.larkTitle || x.title) === o.sec));
     if (f) node.href = flowHref(f, o.col ? f.steps.findIndex((st) => st.id === o.col) + 1 : 0);
     delete node.ref;
   }
   Object.values(node).forEach((v) => resolveRefs(v, g));
 }
+for (const f of flows) f.doc = guides.find((g) => g.id === f.gid)?.doc;
 for (const g of larkGuides) resolveRefs(flows.filter((f) => f.gid === g.id), g);
-for (const f of flows) for (const st of f.steps) delete st.id;
+for (const f of flows) { for (const st of f.steps) delete st.id; delete f.doc; delete f.larkTitle; }
 for (const t of trouble) if (!flows.some((f) => f.id === t)) warn(`content/site.json 的 troubleshooting 找不到流程「${t}」`);
 
 // 「看畫面找問題」
@@ -557,7 +627,8 @@ function lastContentCommit() {
 }
 
 const stepKey = (st, k) => st.id || plain(st.title).trim() || `#${k}`;
-const stepSig = (st) => ({ title: plain(st.title), body: hash(st.body), imgs: st.imgs.map((m) => m.src) });
+// 圖片只比對檔名（不含副檔名）：png 轉成 webp 不算截圖有變
+const stepSig = (st) => ({ title: plain(st.title), body: hash(st.body), imgs: st.imgs.map((m) => m.src.replace(/\.\w+$/, '')) });
 const stepLabel = (f, k) => `第 ${f.steps[k].label || k + 1} 步「${plain(f.steps[k].title) || `第 ${k + 1} 個畫面`}」`;
 
 function diffFlow(f, prev) {
@@ -624,6 +695,7 @@ const data = {
   flows,
   lookups,
   overviews,
+  redirects: site.redirects || {},
 };
 const json = JSON.stringify(data);
 const leaks = (site.publicForbidden || []).filter((w) => json.includes(w));
@@ -634,19 +706,38 @@ if (leaks.length) {
 fs.mkdirSync(path.join(SITE, 'data'), { recursive: true });
 fs.writeFileSync(path.join(SITE, 'data', 'flows.js'), `window.HC_DATA = ${json};\n`);
 
-// 沒被任何流程用到的圖片：不該放在公開的 site/ 裡
+// 沒被任何流程用到的圖片：不該放在公開的 site/ 裡，也不要佔空間。
+// --prune 直接刪掉（原圖都在 Lark，需要時會重新下載），images.json 標記 pruned，同步時就不會再下載回來
 const allImages = fs.readdirSync(path.join(SITE, 'img'), { recursive: true }).filter((f) => /\.(png|jpe?g|gif|webp)$/i.test(f)).map((f) => `img/${f}`);
-const unused = allImages.filter((f) => !usedImages.has(f));
+const unused = allImages.filter((f) => !usedImages.has(f) && !f.startsWith('img/brand/'));
 if (unused.length) {
   if (process.argv.includes('--prune')) {
     for (const f of unused) {
-      const to = path.join(ROOT, 'private', 'site', f);
-      fs.mkdirSync(path.dirname(to), { recursive: true });
-      fs.renameSync(path.join(SITE, f), to);
+      fs.rmSync(path.join(SITE, f));
+      const th = thumbOf(f);
+      if (th) fs.rmSync(path.join(SITE, th));
+      for (const m of Object.values(manifest)) if (m.file === f) { m.pruned = true; manifestDirty = true; }
     }
-    console.log(`已把 ${unused.length} 張沒用到的圖片移到 private/site/img`);
-  } else warn(`site/img 有 ${unused.length} 張圖片沒被用到，執行 node scripts/build.mjs --prune 可移出網站`);
+    console.log(`已刪除 ${unused.length} 張沒用到的圖片`);
+  } else warn(`site/img 有 ${unused.length} 張圖片沒被用到，執行 node scripts/build.mjs --prune 可刪除`);
 }
+// 縮圖對應的原圖已經不在了
+for (const f of fs.readdirSync(path.join(SITE, 'thumbs'), { recursive: true }).filter((x) => /\.(jpe?g|webp)$/i.test(x))) {
+  const base = f.replace(/\.\w+$/, '');
+  if (!allImages.some((a) => a.replace(/^img\//, '').replace(/\.\w+$/, '') === base) || unused.some((u) => u.replace(/^img\//, '').replace(/\.\w+$/, '') === base)) {
+    if (process.argv.includes('--prune')) fs.rmSync(path.join(SITE, 'thumbs', f), { force: true });
+  }
+}
+// images.json：Lark 文件已經沒有的圖片，紀錄也一併清掉
+const liveTokens = new Set();
+for (const spec of LARK_DOCS) for (const b of Object.values(readJSON(content('lark', spec.file)).blocks)) if (b.type === 'image') liveTokens.add(`${spec.imgDoc}:${b.image.token}`);
+if (process.argv.includes('--prune')) {
+  for (const k of Object.keys(manifest)) {
+    const m = manifest[k];
+    if (!liveTokens.has(k) && !usedImages.has(m.file)) { delete manifest[k]; manifestDirty = true; }
+  }
+}
+if (manifestDirty) fs.writeFileSync(content('images.json'), JSON.stringify(manifest, null, 1));
 
 const steps = flows.reduce((n, f) => n + f.steps.length, 0);
 console.log(`✔ ${guides.length} 份教學、${flows.length} 條流程、${steps} 個畫面、${lookups.length} 個「看畫面找問題」畫面、${usedImages.size} 張圖`);

@@ -3,7 +3,7 @@
    不需要建置工具或套件；資料來自 data/flows.js（window.HC_DATA，由 scripts/build.mjs 產生）
    網址：#/                         首頁（流程總覽）
          #/f/<教學>/<流程>/<第幾步>   流程播放
-         #/f/<教學>/<流程>/all       全部畫面一覽
+         #/f/<教學>/<流程>/all       整頁看（所有步驟與說明一次列出）
          #/e/<第幾個>                看畫面找問題
          #/s/<關鍵字>                搜尋
    ========================================================================= */
@@ -37,6 +37,12 @@
     monitor: '<rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>',
     sun: '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>',
     moon: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>',
+    play: '<polygon points="6 4 20 12 6 20 6 4"/>',
+    copy: '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+    list: '<line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>',
+    steps: '<rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="10 9 13 12 10 15"/>',
+    alert: '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+    clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
   };
   const ic = (name) => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
 
@@ -49,6 +55,18 @@
   const plain = (runs) => (runs || []).map((r) => r.s).join('');
   const flowHref = (f, pos) => `#/f/${f.gid}/${encodeURIComponent(f.title)}${pos ? `/${pos}` : ''}`;
   const findFlow = (gid, title) => flows.find((f) => f.gid === gid && f.title === title);
+  // 內容搬家或合併後的舊網址（content/site.json 的 redirects）
+  const redirectFlow = (gid, title) => {
+    const to = (D.redirects || {})[`${gid}/${title}`] || (D.redirects || {})[gid];
+    if (!to) return null;
+    const [g, ...t] = to.split('/');
+    return findFlow(g, t.join('/'));
+  };
+  // 檢視方式：逐步看（一次一個畫面）／整頁看（所有步驟一次列出，適合客服快速掃描、複製說明）
+  let mode = store.get('uf.mode') === 'page' ? 'page' : 'step';
+  // 最近看過的流程（只存在這台瀏覽器）
+  const recent = (() => { try { return JSON.parse(store.get('uf.recent') || '[]').filter((id) => flows.some((f) => f.id === id)); } catch { return []; } })();
+  const touchRecent = (f) => { const k = recent.indexOf(f.id); if (k >= 0) recent.splice(k, 1); recent.unshift(f.id); recent.length = Math.min(recent.length, 6); store.set('uf.recent', JSON.stringify(recent)); };
   // 通路標記：有 emoji 就用 emoji（與其他渲染器一致），沒有才退回色點
   const chMark = (c) => (c.emoji ? `<span class="ch-emoji" aria-hidden="true">${c.emoji}</span>` : `<span class="ch-dot" style="--ch:${c.color}"></span>`);
   const chBadge = (id) => { const c = chMap[id]; return c ? `<span class="badge" style="--ch:${c.color}">${chMark(c)}${esc(c.name)}</span>` : ''; };
@@ -90,6 +108,7 @@
       if (b.t === 'p') return `<p${ind}>${runsHTML(b.r)}</p>`;
       if (b.t === 'h') return `<h3>${runsHTML(b.r)}</h3>`;
       if (b.t === 'tip') return `<div class="callout"><span class="callout-ic">${ic('bulb')}</span><div>${runsHTML(b.r)}</div></div>`;
+      if (b.t === 'warn') return `<div class="callout warn"><span class="callout-ic">${ic('alert')}</span><div>${runsHTML(b.r)}</div></div>`;
       if (b.t === 'ul' || b.t === 'ol') {
         return `<${b.t}${ind}>${b.items.map((it) => `<li${it.n ? ` value="${it.n}"` : ''}>${runsHTML(it.r)}${it.kids ? blocksHTML(it.kids) : ''}</li>`).join('')}</${b.t}>`;
       }
@@ -101,6 +120,31 @@
       if (b.t === 'youtube') return `<figure class="blk-video yt"><iframe src="https://www.youtube-nocookie.com/embed/${esc(b.id)}?rel=0&playsinline=1" title="${esc(b.name || '影片')}" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe><figcaption><a href="https://www.youtube.com/shorts/${esc(b.id)}" target="_blank" rel="noopener">在 YouTube 開啟</a></figcaption></figure>`;
       return '';
     }).join('');
+  }
+
+  // 複製給用戶用的純文字（貼到 LINE、客服系統）
+  function blocksText(blocks, pre = '') {
+    return (blocks || []).flatMap((b) => {
+      if (b.t === 'p' || b.t === 'h') return [pre + plain(b.r)];
+      if (b.t === 'tip') return [`${pre}💡 ${plain(b.r)}`];
+      if (b.t === 'warn') return [`${pre}⚠️ ${plain(b.r)}`];
+      if (b.t === 'ul' || b.t === 'ol') return b.items.flatMap((it, k) => [`${pre}${b.t === 'ol' ? `${it.n || k + 1}. ` : '・'}${plain(it.r)}`, ...(it.kids ? [blocksText(it.kids, `${pre}　`)] : [])]);
+      return [];
+    }).filter((x) => x.trim()).join('\n');
+  }
+  const stepText = (f, k) => {
+    const st = f.steps[k];
+    const body = blocksText(st.body);
+    return `${stepNo(f, k)}. ${stepTitle(f, k)}${body ? `\n${body}` : ''}`;
+  };
+  function flowText(f) {
+    const out = [`【${f.title}】`];
+    if (f.intro.length) out.push(blocksText(f.intro));
+    f.chapters.forEach((c) => {
+      if (c.title && f.chapters.length > 1) out.push('', `■ ${c.title}`);
+      for (let k = c.start; k <= c.end; k++) out.push(stepText(f, k));
+    });
+    return out.join('\n');
   }
 
   function faqHTML(items) {
@@ -133,7 +177,7 @@
     const desc = plain((f.intro.find((b) => b.r) || (f.blocks || []).find((b) => b.r) || {}).r);
     return `<a class="fcard ${f.kind}" href="${flowHref(f)}" style="--ch:${chMap[f.channel]?.color}">${strip}
       <div class="info"><div class="meta">${chBadge(f.channel)}<span>${esc(f.guide)}</span></div>
-        <h3>${esc(f.title)}</h3><div class="meta"><span class="pill">${meta}</span>${f.faq.length && n ? `<span class="pill">${f.faq.length} 題問答</span>` : ''}</div>
+        <h3>${esc(f.title)}</h3><div class="meta"><span class="pill">${meta}</span>${f.faq.length && n ? `<span class="pill">${f.faq.length} 題問答</span>` : ''}${f.videos?.length ? `<span class="pill vid">${ic('play')} 影片</span>` : ''}</div>
         ${desc ? `<div class="desc">${esc(desc)}</div>` : ''}</div></a>`;
   }
 
@@ -147,6 +191,15 @@
       <div class="desc">請用戶傳截圖，點選一樣的畫面，就能看到原因和處理方式。</div></div></a>`;
   }
 
+  function recentHTML() {
+    const list = recent.map((id) => flows.find((f) => f.id === id)).filter((f) => f && inCh(f));
+    if (!list.length) return '';
+    return `<div class="recent"><span class="recent-label">${ic('clock')} 最近看過</span>${list.map((f) => {
+      const im = f.steps[0]?.imgs[0];
+      return `<a href="${flowHref(f)}">${im ? `<img src="${esc(thumb(im))}" alt="" loading="lazy">` : ''}<span>${esc(f.title)}</span>${chMap[f.channel] && channel === 'all' && D.channels.length > 1 ? `<span class="recent-ch">${chMap[f.channel].emoji || ''}</span>` : ''}</a>`;
+    }).join('')}</div>`;
+  }
+
   function viewHome() {
     const fs = flows.filter(inCh);
     const groups = ['flow', 'trouble', 'info'].map((k) => {
@@ -157,12 +210,19 @@
     }).join('');
     return `<div class="wrap">
       <div class="hero"><h1>想看哪一個流程？</h1><p>點一個流程，就能像操作 App 一樣一步一步看畫面；遇到問題可以用畫面對照原因。</p>
-        <div class="quick">${QUICK.map((q) => `<a href="#/s/${encodeURIComponent(q)}">${esc(q)}</a>`).join('')}</div></div>
+        <div class="quick">${QUICK.map((q) => `<a href="#/s/${encodeURIComponent(q)}">${esc(q)}</a>`).join('')}</div>
+        ${recentHTML()}</div>
       ${groups || `<div class="empty"><div class="big">${ic('inbox')}</div>這個通路目前還沒有流程</div>`}
       ${footer()}</div>`;
   }
 
   /* ---------- 流程頁 ---------- */
+  // 目前畫面是哪一種就標哪一種（不是看偏好）：i 為 null＝整頁看
+  const modeSeg = (f, i) => `<div class="seg" role="group" aria-label="檢視方式">
+      <a href="${flowHref(f, (i ?? 0) + 1)}" data-mode="step" aria-pressed="${i !== null}">${ic('steps')}<span>逐步看</span></a>
+      <a href="${flowHref(f)}/all" data-mode="page" aria-pressed="${i === null}">${ic('list')}<span>整頁看</span></a></div>`;
+  const videoBtn = (f) => (f.videos?.length ? f.videos.map((v) => `<button class="btn vid" type="button" data-video="${esc(v.id)}" data-vname="${esc(`${f.title}・${v.name || '實測影片'}`)}">${ic('play')} ${esc(v.name || '實測影片')}</button>`).join('') : '');
+
   function viewFlow(f, pos, sub) {
     const n = f.steps.length;
     const crumbs = `<div class="crumbs"><a href="#/">流程總覽</a><span class="sep">/</span>${chBadge(f.channel)}<span>${esc(f.guide)}</span></div>`;
@@ -171,8 +231,9 @@
       const im = x.steps[0]?.imgs[0];
       return `<a href="${flowHref(x)}" class="${x === f ? 'on' : ''}">${im ? `<img src="${esc(thumb(im))}" alt="" loading="lazy">` : ''}${esc(x.title)}</a>`;
     }).join('')}</div></div>`;
-    const faq = f.faq.length ? `<div class="more-sec"><h2>${ic('chat')} 常見問題</h2>${faqHTML(f.faq)}</div>` : '';
+    const faq = f.faq.length ? `<div class="more-sec" id="faq"><h2>${ic('chat')} 常見問題</h2>${faqHTML(f.faq)}</div>` : '';
     const overview = f.overview && D.overviews[f.overview] ? `<a class="btn" href="${esc(D.overviews[f.overview].src)}" target="_blank" rel="noopener">${ic('map')} 一張圖看完整流程</a>` : '';
+    const faqJump = f.faq.length ? `<a class="btn ghost" href="#faq" data-jump="faq">${ic('chat')} 常見問題 ${f.faq.length}</a>` : '';
 
     // 沒有截圖步驟：直接當文章看
     if (!n) {
@@ -181,19 +242,34 @@
         ${f.faq.length ? `<div class="more-sec">${faqHTML(f.faq)}</div>` : ''}${sibHTML}${footer()}</div>`;
     }
 
-    // 全部畫面一覽
+    // 整頁看：每一步的畫面與說明一次列出，可以直接 Ctrl+F、複製說明給用戶
     if (pos === 'all') {
-      let lastCh = -1;
-      const cells = f.steps.map((s, k) => {
-        const ch = f.chapters[s.ch];
-        const label = s.ch !== lastCh && ch.title ? `<div class="ch-label">${esc(ch.title)}</div>` : '';
-        lastCh = s.ch;
-        return `${label}<a href="${flowHref(f, k + 1)}"><span class="th">${s.imgs[0] ? `<img src="${esc(thumb(s.imgs[0]))}" alt="" loading="lazy">` : ''}</span><span class="t"><span class="n">${esc(stepNo(f, k))}</span>${esc(stepTitle(f, k))}</span></a>`;
+      const sections = f.chapters.map((c) => {
+        const cards = [];
+        for (let k = c.start; k <= c.end; k++) {
+          const s = f.steps[k];
+          const alt = `${stepNo(f, k)}. ${stepTitle(f, k)}`;
+          const im = s.imgs[0];
+          cards.push(`<article class="pg-card" id="s${k + 1}">
+            <div class="pg-shot">${im ? `<button type="button" data-zoom="${esc(im.src)}" data-cap="${esc(alt)}" aria-label="放大畫面：${esc(alt)}"><img src="${esc(thumb(im))}" alt="${esc(alt)}" loading="lazy" decoding="async"></button>` : '<span class="none">沒有截圖</span>'}
+              ${s.imgs.length > 1 ? `<div class="pg-alts">${s.imgs.slice(1).map((m, j) => `<button type="button" data-zoom="${esc(m.src)}" data-cap="${esc(`${alt}（${j + 2}/${s.imgs.length}）${m.caption ? `：${m.caption}` : ''}`)}" aria-label="第 ${j + 2} 張"><img src="${esc(thumb(m))}" alt="" loading="lazy"></button>`).join('')}</div>` : ''}</div>
+            <div class="pg-txt">
+              <div class="pg-head"><span class="n">${esc(stepNo(f, k))}</span><h3>${s.title ? runsHTML(s.title) : esc(stepTitle(f, k))}</h3></div>
+              <div class="prose">${blocksHTML(s.body)}</div>
+              <div class="pg-acts"><button type="button" class="mini" data-copystep="${k}">${ic('copy')} 複製說明</button><a class="mini" href="${flowHref(f, k + 1)}">${ic('steps')} 逐步看</a></div>
+            </div></article>`);
+        }
+        return `<section class="pg-ch">${c.title && f.chapters.length > 1 ? `<h2 class="pg-ch-title" id="c${c.start + 1}">${esc(c.title)}</h2>` : ''}
+          ${c.intro.length ? `<div class="ch-intro prose"><div class="t">先了解</div>${blocksHTML(c.intro)}</div>` : ''}
+          <div class="pg-grid">${cards.join('')}</div>
+          ${c.outro.length ? `<div class="pg-outro prose">${blocksHTML(c.outro)}</div>` : ''}</section>`;
       }).join('');
-      return `<div class="wrap">${crumbs}<div class="v-head"><h1>${esc(f.title)}</h1><span class="count">共 ${n} 個畫面</span>
-        <div class="acts"><a class="btn primary" href="${flowHref(f, 1)}">▶ 一步一步看</a>${overview}</div></div>
+      const toc = f.chapters.length > 1 ? `<nav class="pg-toc" aria-label="章節">${f.chapters.map((c) => `<a href="#c${c.start + 1}" data-jump="c${c.start + 1}">${esc(c.title || '開始')}<small>${c.end - c.start + 1}</small></a>`).join('')}</nav>` : '';
+      return `<div class="wrap">${crumbs}
+        <div class="v-head"><h1>${esc(f.title)}</h1><span class="count">共 ${n} 個畫面</span></div>
+        <div class="v-tools">${modeSeg(f, null)}${videoBtn(f)}${faqJump}<span class="sp"></span><button class="btn" type="button" data-copyall="1">${ic('copy')} 複製全部步驟</button><button class="btn" type="button" data-copy="${flowHref(f)}">${ic('link')} 複製連結</button>${overview}</div>
         ${f.intro.length ? `<div class="v-intro prose">${blocksHTML(f.intro)}</div>` : ''}
-        <div class="grid-all">${cells}</div>${faq}${sibHTML}${footer()}</div>`;
+        ${toc}${sections}${faq}${sibHTML}${footer()}</div>`;
     }
 
     const i = Math.min(Math.max(pos, 1), n) - 1;
@@ -218,11 +294,14 @@
     }).join('');
     const chapterPills = f.chapters.length > 1
       ? `<div class="chapters">${f.chapters.map((c) => `<a class="pill${c === ch ? ' on' : ''}" href="${flowHref(f, c.start + 1)}">${esc(c.title || '開始')}</a>`).join('')}</div>` : '';
+    // 進度條：每一段代表一個章節，目前位置填色
+    const progress = `<div class="progress" aria-hidden="true">${f.chapters.map((c) => `<span style="flex:${c.end - c.start + 1}"><i style="width:${i > c.end ? 100 : i < c.start ? 0 : ((i - c.start + 1) / (c.end - c.start + 1)) * 100}%"></i></span>`).join('')}</div>`;
 
     return `<div class="wrap">${crumbs}
-      <div class="v-head"><h1>${esc(f.title)}</h1><span class="count">${count}</span>
-        <div class="acts"><button class="btn" type="button" data-copy="${flowHref(f, i + 1)}">${ic('link')} 複製這一步的連結</button><a class="btn" href="${flowHref(f)}/all">${ic('grid')} 全部畫面</a>${overview}</div></div>
+      <div class="v-head"><h1>${esc(f.title)}</h1><span class="count">${count}</span></div>
+      <div class="v-tools">${modeSeg(f, i)}${videoBtn(f)}${faqJump}<span class="sp"></span><button class="btn hide-m" type="button" data-copy="${flowHref(f, i + 1)}">${ic('link')} 複製這一步的連結</button>${overview}</div>
       ${f.intro.length && i === 0 ? `<div class="v-intro prose">${blocksHTML(f.intro)}</div>` : ''}
+      ${progress}
       <div class="viewer" id="viewer">
         <div class="stage" id="stage">
           <div class="stage-box">
@@ -233,7 +312,7 @@
             <a class="arrow next${next ? '' : ' off'}" href="${next || '#'}" aria-label="下一步">›</a>
           </div>
           ${st.imgs.length > 1 ? `<div class="alts">${st.imgs.map((m, k) => `<a href="${flowHref(f, i + 1)}/${k}" class="${m === im ? 'on' : ''}" title="${esc(m.caption || `第 ${k + 1} 張`)}"><img src="${esc(thumb(m))}" alt=""></a>`).join('')}</div>` : ''}
-          ${im ? '<div class="zoom-hint">點圖片可以放大看細節</div>' : ''}
+          ${im ? '<div class="zoom-hint">點圖片可以放大看細節・鍵盤 ← → 換步驟</div>' : ''}
         </div>
         <div class="detail">
           <div class="top-part">
@@ -245,6 +324,7 @@
           <div class="bottom-part">
             ${im && im.caption ? `<div class="caption-now">目前畫面：${esc(im.caption)}${st.imgs.length > 1 ? `（${st.imgs.indexOf(im) + 1}/${st.imgs.length}）` : ''}</div>` : ''}
             <div class="prose">${blocksHTML(st.body)}${i === ch.end ? blocksHTML(ch.outro) : ''}</div>
+            <div class="step-acts"><button type="button" class="mini" data-copystep="${i}">${ic('copy')} 複製這一步的說明</button><button type="button" class="mini" data-copy="${flowHref(f, i + 1)}">${ic('link')} 複製連結</button></div>
             ${nextHint}
           </div>
         </div>
@@ -252,7 +332,7 @@
       <div class="film">${chapterPills}<div class="row" id="film">${film}</div></div>
       ${faq}${sibHTML}${footer()}
     </div>
-    <div class="mbar"><a class="btn${prev ? '' : ' off'}" href="${prev || '#'}">‹ 上一步</a><a class="mid" href="${flowHref(f)}/all">${st.label ? `${esc(st.label)} / ${esc(f.steps[n - 1].label)}` : `${i + 1} / ${n}`}<small>全部畫面</small></a>
+    <div class="mbar"><a class="btn${prev ? '' : ' off'}" href="${prev || '#'}">‹ 上一步</a><a class="mid" href="${flowHref(f)}/all" data-mode="page">${st.label ? `${esc(st.label)} / ${esc(f.steps[n - 1].label)}` : `${i + 1} / ${n}`}<small>整頁看</small></a>
       ${next ? `<a class="btn primary" href="${next}">下一步 ›</a>` : nextFlow ? `<a class="btn primary" href="${flowHref(nextFlow)}">下一個流程 ›</a>` : '<a class="btn off" href="#">已完成</a>'}</div>`;
   }
 
@@ -374,7 +454,10 @@
     const parts = location.hash.replace(/^#\/?/, '').split('/').filter((x) => x !== '').map((x) => { try { return decodeURIComponent(x); } catch { return x; } });
     if (parts[0] === 'f') {
       const f = findFlow(parts[1], parts[2]);
-      if (f) return { view: 'flow', f, pos: parts[3] === 'all' ? 'all' : Number(parts[3]) || 1, sub: Number(parts[4]) || 0 };
+      // 沒指定第幾步：照使用者上次選的檢視方式打開
+      if (f) return { view: 'flow', f, pos: parts[3] === 'all' ? 'all' : Number(parts[3]) || (mode === 'page' && f.steps.length ? 'all' : 1), sub: Number(parts[4]) || 0 };
+      const moved = redirectFlow(parts[1], parts[2]);
+      if (moved) { history.replaceState(null, '', flowHref(moved)); return { view: 'flow', f: moved, pos: mode === 'page' && moved.steps.length ? 'all' : 1, sub: 0 }; }
     }
     if (parts[0] === 'e') return { view: 'lookup', sel: Number(parts[1]) || 0, picked: parts.length > 1 };
     if (parts[0] === 's') return { view: 'search', q: parts.slice(1).join('/') };
@@ -385,7 +468,7 @@
   function render() {
     const r = parseRoute();
     let html, title;
-    if (r.view === 'flow') { html = viewFlow(r.f, r.pos, r.sub); title = r.pos === 'all' || !r.f.steps.length ? r.f.title : `${r.f.title}（${stepNo(r.f, Math.min(r.pos, r.f.steps.length) - 1)}/${r.f.steps.at(-1).label || r.f.steps.length}）`; }
+    if (r.view === 'flow') { touchRecent(r.f); html = viewFlow(r.f, r.pos, r.sub); title = r.pos === 'all' || !r.f.steps.length ? r.f.title : `${r.f.title}（${stepNo(r.f, Math.min(r.pos, r.f.steps.length) - 1)}/${r.f.steps.at(-1).label || r.f.steps.length}）`; }
     else if (r.view === 'lookup') { html = viewLookup(r.sel); title = '看畫面找問題'; }
     else if (r.view === 'search') { html = viewSearch(r.q); title = `搜尋：${r.q}`; }
     else { html = viewHome(); title = null; }
@@ -426,14 +509,14 @@
     clearTimeout(toast.timer);
     toast.timer = setTimeout(() => t.classList.remove('show'), 1600);
   }
-  async function copyText(text) {
+  async function copyText(text, msg = '已複製連結，可以直接傳給用戶') {
     try { await navigator.clipboard.writeText(text); }
     catch {
       const ta = document.createElement('textarea');
       ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
       document.body.append(ta); ta.select(); document.execCommand('copy'); ta.remove();
     }
-    toast('已複製連結，可以直接傳給用戶');
+    toast(msg);
   }
 
   let zoomTrigger = null;
@@ -452,6 +535,26 @@
     if (zoomTrigger) zoomTrigger.focus();
   }
 
+  // 實測影片：開在浮動視窗裡播放，關掉時清掉 iframe 才會停止播放
+  let videoTrigger = null;
+  function openVideo(id, name, trigger) {
+    videoTrigger = trigger;
+    const url = `https://www.youtube.com/shorts/${id}`;
+    $('#vs-frame').innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${esc(id)}?rel=0&playsinline=1&autoplay=1" title="${esc(name)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+    $('#vs-title').textContent = name;
+    $('#vs-open').href = url;
+    $('#vs-copy').dataset.url = url;
+    $('#vsheet').hidden = false;
+    document.body.style.overflow = 'hidden';
+    $('#vsheet .lb-close').focus();
+  }
+  function closeVideo() {
+    $('#vsheet').hidden = true;
+    $('#vs-frame').innerHTML = '';
+    document.body.style.overflow = '';
+    if (videoTrigger) videoTrigger.focus();
+  }
+
   function step(delta) {
     const r = parseRoute();
     if (r.view !== 'flow' || typeof r.pos !== 'number' || !r.f.steps.length) return;
@@ -460,8 +563,16 @@
   }
 
   document.addEventListener('click', (e) => {
-    const t = e.target.closest('[data-ch],[data-copy],[data-zoom],[data-theme-set],.lb-close,#q-clear');
+    const t = e.target.closest('[data-ch],[data-copy],[data-copystep],[data-copyall],[data-video],[data-jump],[data-mode],[data-zoom],[data-theme-set],.lb-close,#vs-copy,#q-clear');
     if (!t) return;
+    const r = parseRoute();
+    if (t.dataset.mode) { mode = t.dataset.mode; store.set('uf.mode', mode); return; }   // 連結照常換頁，只記住偏好
+    if (t.dataset.jump) { e.preventDefault(); document.getElementById(t.dataset.jump)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+    if (t.dataset.copystep && r.view === 'flow') { copyText(stepText(r.f, Number(t.dataset.copystep)), '已複製這一步的說明，可以直接貼給用戶'); return; }
+    if (t.dataset.copyall && r.view === 'flow') { copyText(flowText(r.f), `已複製「${r.f.title}」全部 ${r.f.steps.length} 個步驟`); return; }
+    if (t.dataset.video) { openVideo(t.dataset.video, t.dataset.vname, t); return; }
+    if (t.id === 'vs-copy') { copyText(t.dataset.url, '已複製影片連結，可以直接傳給用戶'); return; }
+    if (t.closest('#vsheet') && t.classList.contains('lb-close')) { closeVideo(); return; }
     if (t.dataset.themeSet) {
       theme = t.dataset.themeSet;
       store.set('uf.theme', theme);
@@ -478,9 +589,11 @@
     else if (t.id === 'q-clear') { $('#q').value = ''; $('#q-clear').hidden = true; $('#q').focus(); location.hash = '#/'; }
   });
   $('#lightbox').addEventListener('click', (e) => { if (e.target.id === 'lightbox') unzoom(); });
+  $('#vsheet').addEventListener('click', (e) => { if (e.target.id === 'vsheet') closeVideo(); });
 
   document.addEventListener('keydown', (e) => {
     if (!$('#lightbox').hidden) { if (e.key === 'Escape') unzoom(); return; }
+    if (!$('#vsheet').hidden) { if (e.key === 'Escape') closeVideo(); return; }
     const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName || '');
     if (typing) { if (e.key === 'Escape') document.activeElement.blur(); return; }
     if (e.key === '/') { e.preventDefault(); $('#q').focus(); }
