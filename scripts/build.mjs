@@ -144,6 +144,12 @@ function splitFirstLine(runs) {
   return [head, tail];
 }
 
+// 粗體標題後面接著「：」（沒加粗）時，冒號是標題的一部分，不留在說明開頭
+const bodyAfterTitle = (runs) => {
+  const rs = trimRuns(runs);
+  if (rs.length) rs[0] = { ...rs[0], s: rs[0].s.replace(/^[：:]\s*/, '') };
+  return trimRuns(rs);
+};
 const stripColon = (runs) => {
   const rs = trimRuns(runs);
   if (rs.length) rs[rs.length - 1].s = rs[rs.length - 1].s.replace(/[：:]\s*$/, '');
@@ -213,7 +219,7 @@ function convertLarkDoc(spec) {
       if (runs[0]?.b && runs[0].s.trim()) {
         const boldEnd = runs.findIndex((r) => !r.b);
         title = stripColon(boldEnd < 0 ? runs : runs.slice(0, boldEnd));
-        body = boldEnd < 0 ? [] : trimRuns(runs.slice(boldEnd));
+        body = boldEnd < 0 ? [] : bodyAfterTitle(runs.slice(boldEnd));
       } else if (/^【[^】]+】/.test(txt) && txt.length < 40 && !txt.includes('\n')) {
         title = runs; body = [];
       } else if (remain.length && (/[：:]$/.test(l1) || l1.length <= 12)) {
@@ -448,7 +454,7 @@ function articleToSteps(blocks, layout, id) {
       const cols = b.items.map((it) => {
         const boldEnd = it.r.findIndex((r) => !r.b);
         const title = stripColon(boldEnd < 0 ? it.r : it.r.slice(0, boldEnd));
-        const body = boldEnd < 0 ? [] : trimRuns(it.r.slice(boldEnd));
+        const body = boldEnd < 0 ? [] : bodyAfterTitle(it.r.slice(boldEnd));
         const key = `${chapter}|${plain(title).trim()}`;
         const imgs = (layout.images?.[key] || []).map((x) => {
           const t = typeof x === 'string' ? x : x.token;
@@ -552,13 +558,22 @@ function resolveRefs(node, g) {
   if (!node || typeof node !== 'object') return;
   if (node.ref) {
     let o = g.owner[node.ref];
-    if (!o) {
-      const col = g.titleCol[node.s.trim()];
-      warn(`${g.id}：Lark 原文件中「${node.s.trim()}」的連結已失效（目標區塊不存在）${col ? '，網站已改連到同名步驟；建議在 Lark 重新設定連結' : ''}`);
-      if (col) o = { col };
+    let f = o && flows.find((x) => x.doc === g.doc && (o.col ? x.steps.some((st) => st.id === o.col) : (x.larkTitle || x.title) === o.sec));
+    let href = f && flowHref(f, o.col ? f.steps.findIndex((st) => st.id === o.col) + 1 : 0);
+    if (!href) {
+      // Lark 匯出的連結錨點有時對不上區塊 id：改用連結文字比對 流程名稱 → 章節名稱 → 步驟名稱
+      const text = node.s.trim().replace(/^[「【]|[」】]$/g, '').replace(/^\d+\.\s*/, '').trim();
+      const same = (t) => plain([{ s: t || '' }]).replace(/^[(（][A-Z0-9][)）]\s*/, '').replace(/^[「【]|[」】]$/g, '').trim() === text;
+      const docFlows = flows.filter((x) => x.doc === g.doc);
+      const byFlow = docFlows.find((x) => same(x.title) || same(x.larkTitle));
+      const byChapter = !byFlow && docFlows.flatMap((x) => x.chapters.map((c) => [x, c])).find(([, c]) => same(c.title) || same((c.title || '').split(' › ').pop()));
+      const col = !byFlow && !byChapter && g.titleCol[node.s.trim()];
+      if (byFlow) href = flowHref(byFlow);
+      else if (byChapter) href = flowHref(byChapter[0], byChapter[1].start + 1);
+      else if (col) { const cf = docFlows.find((x) => x.steps.some((st) => st.id === col)); if (cf) href = flowHref(cf, cf.steps.findIndex((st) => st.id === col) + 1); }
+      if (!href) warn(`${g.id}：Lark 原文件中「${node.s.trim()}」的連結找不到目標，網站上沒有跳轉`);
     }
-    const f = o && flows.find((x) => x.doc === g.doc && (o.col ? x.steps.some((st) => st.id === o.col) : (x.larkTitle || x.title) === o.sec));
-    if (f) node.href = flowHref(f, o.col ? f.steps.findIndex((st) => st.id === o.col) + 1 : 0);
+    if (href) node.href = href;
     delete node.ref;
   }
   Object.values(node).forEach((v) => resolveRefs(v, g));
@@ -688,7 +703,7 @@ const data = {
   updatedAt,
   contentHash,
   notices,
-  site: { title: site.title, subtitle: site.subtitle },
+  site: { title: site.title, subtitle: site.subtitle, banner: site.banner || '' },
   channels: site.channels,
   synonyms: site.synonyms || [],
   guides: guides.map((g) => ({ id: g.id, channel: g.channel, title: g.title, icon: g.icon, summary: g.summary })),

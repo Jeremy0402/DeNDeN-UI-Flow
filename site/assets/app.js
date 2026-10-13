@@ -86,11 +86,7 @@
     let h = esc(text);
     h = h.replace(/(https?:\/\/[^\s<>「」，。）)]+)/g, (u) => `<a href="${u}" target="_blank" rel="noopener">${u}</a>`);
     h = h.replace(/【([^】\n]{1,40})】/g, (all, x) => (x.length > 14 ? `<strong>【${x}】</strong>` : `<span class="ui">${x}</span>`));
-    // 「10. 提高啟動充電成功率」這類段落參照 → 連到對應的流程
-    h = h.replace(/「(?:\d+\.\s*)?([^」\n]{2,30})」/g, (all, x) => {
-      const f = flows.find((fl) => fl.title === x.trim());
-      return f ? `<a href="${flowHref(f)}">${all}</a>` : all;
-    });
+    // 連結只來自 Lark 文件上設定的超連結（與底表一致），不再依文字自動比對加連結
     return h;
   }
   const runsHTML = (runs) => (runs || []).map((r) => {
@@ -683,6 +679,7 @@
   applyTheme();
   $('#brand-title').textContent = D.site.title;
   $('#brand-sub').textContent = D.site.subtitle || '';
+  if (D.site.banner) { $('#banner-text').textContent = D.site.banner; $('#banner').hidden = false; }
   $('#sync-text').textContent = `資料更新於 ${fmtStamp(UPDATED_AT)}`;
   renderNotices();
   renderChannels();

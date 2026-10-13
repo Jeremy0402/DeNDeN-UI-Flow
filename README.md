@@ -59,7 +59,7 @@ Cloudflare 後台 → Workers & Pages → 建立 → Pages → 連接 GitHub rep
 
 ## 自動同步 Lark（GitHub Actions）
 
-`.github/workflows/sync-lark.yml` 會依知識庫專案相同的時段（平日白天每 20 分鐘、夜間與週末每 3 小時）執行 `scripts/sync-lark.mjs`，抓最新的 AmpGO UI Flow 文件與新圖片，重新建置後只在內容有變動時才 commit，Cloudflare 隨即更新網站。也可以在 GitHub 的 Actions 頁手動按 Run workflow。
+`.github/workflows/sync-lark.yml` 會定時（平日台北 09:00–19:00 每 5 分鐘，其他時段每 15 分鐘；公開 repo 的 Actions 免費不限分鐘）執行 `scripts/sync-lark.mjs`，抓最新的 AmpGO UI Flow 文件與新圖片，重新建置後只在內容有變動時才 commit，Cloudflare 隨即更新網站。也可以在 GitHub 的 Actions 頁手動按 Run workflow。
 
 需要的設定：
 1. Lark 開發者後台，應用程式開通 `docx:document:readonly`、`drive:drive:readonly`（或 `docs:document.media:download`）權限並發布版本

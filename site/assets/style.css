@@ -67,6 +67,11 @@ img { max-width: 100%; }
 /* 單色線條圖示：與 AI-Knowledge-Base、AmpGO-Campaign-Catalog 同一套，跟著文字顏色與字級 */
 .ic { width: 1em; height: 1em; flex-shrink: 0; display: inline-block; vertical-align: -.14em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
+/* 頁面最上方的提醒小字：不黏住，捲動後就讓出空間 */
+.banner { display: flex; align-items: flex-start; justify-content: center; gap: 6px; padding: 7px 24px; background: var(--card-2); border-bottom: 1px solid var(--border); color: var(--sub); font-size: 12.5px; line-height: 1.5; text-align: center; }
+.banner .ic { font-size: 14px; margin-top: 2px; color: var(--muted); }
+@media (max-width: 900px) { .banner { padding: 7px 16px; text-align: left; justify-content: flex-start; font-size: 12px; } }
+
 /* ---------- 頁首 ---------- */
 .topbar {
   position: sticky; top: 0; z-index: 30; min-height: var(--top);
