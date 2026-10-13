@@ -237,7 +237,10 @@
     "J3iSdBqtuo3i24xCHoQlzh0mgPb",
     "IBOgdhXcLo655KxV0v6lmJhcgIe",
     "NkCjdivsEoWRzLxd3AxlbDdtghe",
-    "XvU4dpCL0ogJLFxAB3MlN4g5gOb"
+    "XvU4dpCL0ogJLFxAB3MlN4g5gOb",
+    "P3SMdRzFCoSWlVx61NHlm4bngxe",
+    "LgNfd4sdYokooOxzOFOl9ShZgMe",
+    "AoMXdGV60o60OFxLqWDlWiTdgmc"
    ]
   },
   "Bu5gdz19Qo1qz7x4ykKlVTLwgwg": {
@@ -10043,6 +10046,36 @@
    "runs": [
     {
      "s": "若您想參加，歡迎改用 AmpGO App 在活動指定站點掃碼充電，並透過 AmpGO App 結束充電。"
+    }
+   ]
+  },
+  "P3SMdRzFCoSWlVx61NHlm4bngxe": {
+   "type": "text",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": ""
+    }
+   ]
+  },
+  "LgNfd4sdYokooOxzOFOl9ShZgMe": {
+   "type": "text",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": ""
+    }
+   ]
+  },
+  "AoMXdGV60o60OFxLqWDlWiTdgmc": {
+   "type": "text",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": ""
     }
    ]
   }
