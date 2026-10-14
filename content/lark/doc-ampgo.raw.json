@@ -59,7 +59,24 @@
     "KUYodirMkoatEWxKwLNltax5gze",
     "TM8fdKiK4oYZadxKHBclL4i1gBc",
     "JtZWdR7Dvokaq4xFrm2lRAZ0gjh",
-    "Q6jYdnWgFo3RNzxZwcxlAp0Cgdd",
+    "WlfgdPR2XoiQsJx7teVl7T0hgeb",
+    "E0c8dp5tUolSUixNabjlN0Fog5c",
+    "WkBId2It0oR9V9xiQ7qlxLVsgNf",
+    "JzL3dtyFBoU9tuxsyxGl8Dn0gHe",
+    "Ialxd3IjHojN95xiGQulIp9Ggtf",
+    "DUnydQhleoJERwxTn4KlKvsegAd",
+    "FtXadYiGXoAbjvxoKW1l8Bntgfd",
+    "PNjLdqjCXoW7kfxjBJDlXaAVgdf",
+    "KyOEdK3n4o3xHQxVMf2lq6rlgRg",
+    "JlF1dMr8koR1l9xFIaQlwt9Mgcc",
+    "Q1IbdLPuIoyhunxel2Rlon3tgwh",
+    "M7tkdCww2oyeHkxSK15lTxomgDd",
+    "Totpd2Vbvo4tSKxOBf6lnEWjghc",
+    "Pz5bd7VgXobSSEx08TIlnbWGg0b",
+    "PwQ3dnS9moZSkNxcgltlBnkHgwe",
+    "Ya3tdh2AeoHml8xurTllLLmcg5g",
+    "IZ4UdEmi6o2wsyxdY6XlAIXagAd",
+    "V10qdtYiQo4UUTxcuOalKQCZg1b",
     "VlREdWzUUoYy9XxA3VjlIyq2gJe",
     "RatadCqHxoCCq5x0j5ylB51xgAf",
     "GH9bdPMj6o4jFExm6YrlKdGagFh",
@@ -238,9 +255,7 @@
     "IBOgdhXcLo655KxV0v6lmJhcgIe",
     "NkCjdivsEoWRzLxd3AxlbDdtghe",
     "XvU4dpCL0ogJLFxAB3MlN4g5gOb",
-    "P3SMdRzFCoSWlVx61NHlm4bngxe",
-    "LgNfd4sdYokooOxzOFOl9ShZgMe",
-    "AoMXdGV60o60OFxLqWDlWiTdgmc"
+    "P3SMdRzFCoSWlVx61NHlm4bngxe"
    ]
   },
   "Bu5gdz19Qo1qz7x4ykKlVTLwgwg": {
@@ -3232,7 +3247,487 @@
     }
    ]
   },
-  "Q6jYdnWgFo3RNzxZwcxlAp0Cgdd": {
+  "WlfgdPR2XoiQsJx7teVl7T0hgeb": {
+   "type": "heading1",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": "刪除帳號"
+    }
+   ]
+  },
+  "E0c8dp5tUolSUixNabjlN0Fog5c": {
+   "type": "text",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": "如果不再使用 AmpGO，可以在 App 內申請刪除帳號。\n申請送出後，營運團隊會確認帳號狀態，預計 5 個工作天內處理。\n"
+    },
+    {
+     "s": "💡 刪除後，此門號的所有 AmpGO 帳號資料將永久移除，且無法復原。"
+    }
+   ]
+  },
+  "WkBId2It0oR9V9xiQ7qlxLVsgNf": {
+   "type": "heading2",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": "申請前須知"
+    }
+   ]
+  },
+  "JzL3dtyFBoU9tuxsyxGl8Dn0gHe": {
+   "type": "text",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": "刪除後，以下資料會一併移除："
+    }
+   ]
+  },
+  "Ialxd3IjHojN95xiGQulIp9Ggtf": {
+   "type": "bullet",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": "會員個人資料（含車輛／車牌綁定資訊、信用卡等付款資料）"
+    }
+   ]
+  },
+  "DUnydQhleoJERwxTn4KlKvsegAd": {
+   "type": "bullet",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": "App 操作紀錄與登入紀錄"
+    }
+   ]
+  },
+  "FtXadYiGXoAbjvxoKW1l8Bntgfd": {
+   "type": "bullet",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": "帳戶內尚未使用的折扣券與充電券"
+    }
+   ]
+  },
+  "PNjLdqjCXoW7kfxjBJDlXaAVgdf": {
+   "type": "text",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": "申請前，請先完成以下事項："
+    }
+   ]
+  },
+  "KyOEdK3n4o3xHQxVMf2lq6rlgRg": {
+   "type": "ordered",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": "取消電電商城訂閱：",
+     "a": {
+      "bold": "true"
+     }
+    },
+    {
+     "s": "\n電電商城是獨立系統，不會隨 AmpGO 帳號一併取消。\n"
+    },
+    {
+     "s": "請先到電電商城取消訂閱，避免之後繼續扣款。"
+    }
+   ],
+   "seq": "1"
+  },
+  "JlF1dMr8koR1l9xFIaQlwt9Mgcc": {
+   "type": "ordered",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": "使用完尚未兌換的折扣券與充電券：",
+     "a": {
+      "bold": "true"
+     }
+    },
+    {
+     "s": "\n"
+    },
+    {
+     "s": "帳號刪除後，未使用的折扣券與充電券會立即失效，且無法補發。"
+    }
+   ],
+   "seq": "auto"
+  },
+  "Q1IbdLPuIoyhunxel2Rlon3tgwh": {
+   "type": "heading2",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": "申請流程"
+    }
+   ]
+  },
+  "M7tkdCww2oyeHkxSK15lTxomgDd": {
+   "type": "grid",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [
+    "PZszdlb7WosFVex2Gkcl4vrIgRb",
+    "OBxPdUeS4oX8bUx0MYslqUp2ghc",
+    "U5lwdd9uaouFSlxTKbultyOZgre",
+    "WJcadZptLoQf2wxmMdFlyZ4dg8g"
+   ]
+  },
+  "PZszdlb7WosFVex2Gkcl4vrIgRb": {
+   "type": "grid_column",
+   "parent_id": "M7tkdCww2oyeHkxSK15lTxomgDd",
+   "children": [
+    "IaxkdLl0yoCmcjxNWSal0peLgjd",
+    "Y8PfdOvA8oEUcEx2mxEl4wQzgpb",
+    "GqmHdQBkfo6DW5xhRG6lc1vHgGb"
+   ]
+  },
+  "IaxkdLl0yoCmcjxNWSal0peLgjd": {
+   "type": "ordered",
+   "parent_id": "PZszdlb7WosFVex2Gkcl4vrIgRb",
+   "children": [],
+   "runs": [
+    {
+     "s": "進入申請頁：",
+     "a": {
+      "bold": "true"
+     }
+    },
+    {
+     "s": "\n"
+    },
+    {
+     "s": "點擊下方導覽列的【會員】，再往下捲動，點擊【刪除帳號】。"
+    }
+   ],
+   "seq": "1"
+  },
+  "Y8PfdOvA8oEUcEx2mxEl4wQzgpb": {
+   "type": "image",
+   "parent_id": "PZszdlb7WosFVex2Gkcl4vrIgRb",
+   "children": [],
+   "image": {
+    "token": "Vz7wbanKSomh5Px5yfolL2lygkc",
+    "width": 1125,
+    "height": 2436
+   }
+  },
+  "GqmHdQBkfo6DW5xhRG6lc1vHgGb": {
+   "type": "text",
+   "parent_id": "PZszdlb7WosFVex2Gkcl4vrIgRb",
+   "children": [],
+   "runs": [
+    {
+     "s": ""
+    }
+   ]
+  },
+  "OBxPdUeS4oX8bUx0MYslqUp2ghc": {
+   "type": "grid_column",
+   "parent_id": "M7tkdCww2oyeHkxSK15lTxomgDd",
+   "children": [
+    "IaOMdX9gDo5Et6xOzJxlGO2VgJh",
+    "HNPYdbvrroZTVFxDYzolWf5sgze",
+    "G9jQdZax5oA1z7x5pM8lNlIZgTb"
+   ]
+  },
+  "IaOMdX9gDo5Et6xOzJxlGO2VgJh": {
+   "type": "ordered",
+   "parent_id": "OBxPdUeS4oX8bUx0MYslqUp2ghc",
+   "children": [],
+   "runs": [
+    {
+     "s": "閱讀須知：",
+     "a": {
+      "bold": "true"
+     }
+    },
+    {
+     "s": "\n進入「申請刪除帳號」頁後，先閱讀刪除後會移除的資料，以及申請前須完成的事項。\n"
+    },
+    {
+     "s": "點擊「想刪除的原因」，開啟原因選單。"
+    }
+   ],
+   "seq": "2"
+  },
+  "HNPYdbvrroZTVFxDYzolWf5sgze": {
+   "type": "image",
+   "parent_id": "OBxPdUeS4oX8bUx0MYslqUp2ghc",
+   "children": [],
+   "image": {
+    "token": "AQxLbfDUuoQnNcxLstmluWEugLi",
+    "width": 1125,
+    "height": 3084
+   }
+  },
+  "G9jQdZax5oA1z7x5pM8lNlIZgTb": {
+   "type": "text",
+   "parent_id": "OBxPdUeS4oX8bUx0MYslqUp2ghc",
+   "children": [],
+   "runs": [
+    {
+     "s": ""
+    }
+   ]
+  },
+  "U5lwdd9uaouFSlxTKbultyOZgre": {
+   "type": "grid_column",
+   "parent_id": "M7tkdCww2oyeHkxSK15lTxomgDd",
+   "children": [
+    "IyQld2Sb2o9nhJxFYa3lzeImgec",
+    "GttWdobH5oZ88jxUhD6lzaapgDh",
+    "ETP4ddKFooqZYuxPSq9lw4vcg3c"
+   ]
+  },
+  "IyQld2Sb2o9nhJxFYa3lzeImgec": {
+   "type": "ordered",
+   "parent_id": "U5lwdd9uaouFSlxTKbultyOZgre",
+   "children": [],
+   "runs": [
+    {
+     "s": "選擇原因：",
+     "a": {
+      "bold": "true"
+     }
+    },
+    {
+     "s": "\n「想刪除的原因」為必填，原因分為「生活形態改變」、「服務與使用體驗」與「其他」。\n"
+    },
+    {
+     "s": "選好原因後，點擊【確認】。"
+    }
+   ],
+   "seq": "3"
+  },
+  "GttWdobH5oZ88jxUhD6lzaapgDh": {
+   "type": "image",
+   "parent_id": "U5lwdd9uaouFSlxTKbultyOZgre",
+   "children": [],
+   "image": {
+    "token": "TwWbbfND3oTuDdxLm8hlbmGXgwg",
+    "width": 1408,
+    "height": 3048
+   }
+  },
+  "ETP4ddKFooqZYuxPSq9lw4vcg3c": {
+   "type": "text",
+   "parent_id": "U5lwdd9uaouFSlxTKbultyOZgre",
+   "children": [],
+   "runs": [
+    {
+     "s": ""
+    }
+   ]
+  },
+  "WJcadZptLoQf2wxmMdFlyZ4dg8g": {
+   "type": "grid_column",
+   "parent_id": "M7tkdCww2oyeHkxSK15lTxomgDd",
+   "children": [
+    "HRqFdvT35oN82ex51mrlbNZpgGc"
+   ]
+  },
+  "HRqFdvT35oN82ex51mrlbNZpgGc": {
+   "type": "ordered",
+   "parent_id": "WJcadZptLoQf2wxmMdFlyZ4dg8g",
+   "children": [],
+   "runs": [
+    {
+     "s": "補充說明並勾選確認：",
+     "a": {
+      "bold": "true"
+     }
+    },
+    {
+     "s": "\n「補充說明」為選填，最多 200 字。\n勾選「最後確認」的兩個項目後，點擊【送出申請】。\n"
+    },
+    {
+     "s": "任一項未勾選時，無法送出申請。（圖片待補）"
+    }
+   ],
+   "seq": "4"
+  },
+  "Totpd2Vbvo4tSKxOBf6lnEWjghc": {
+   "type": "grid",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [
+    "NFiudqxgqoQZTYx163LlDXcygzd",
+    "D7Tdd0mrDocr4Axn5BqlE0Kggwg",
+    "Mr4fdjOdvoHUvGxb5zylAlcSgbd",
+    "J7z0dJpqNoIDW7xfaVSlRSsYguf"
+   ]
+  },
+  "NFiudqxgqoQZTYx163LlDXcygzd": {
+   "type": "grid_column",
+   "parent_id": "Totpd2Vbvo4tSKxOBf6lnEWjghc",
+   "children": [
+    "YJywdUNQio2dBQxuaQMlZ3pqg8d"
+   ]
+  },
+  "YJywdUNQio2dBQxuaQMlZ3pqg8d": {
+   "type": "ordered",
+   "parent_id": "NFiudqxgqoQZTYx163LlDXcygzd",
+   "children": [],
+   "runs": [
+    {
+     "s": "再次確認送出：",
+     "a": {
+      "bold": "true"
+     }
+    },
+    {
+     "s": "\n畫面會再次詢問「你確定要送出刪除申請？」，點擊【確認送出】即可送出申請。\n"
+    },
+    {
+     "s": "點擊【取消】則不會送出。（圖片待補）"
+    }
+   ],
+   "seq": "5"
+  },
+  "D7Tdd0mrDocr4Axn5BqlE0Kggwg": {
+   "type": "grid_column",
+   "parent_id": "Totpd2Vbvo4tSKxOBf6lnEWjghc",
+   "children": [
+    "HIxAdvnz3o0C5hxVwNUlGTAAg3V",
+    "IdDBd49ADobqw2xEOTLl4Gk7gqx",
+    "GwGvdstDIouXV7x6DY9l4CLxguf"
+   ]
+  },
+  "HIxAdvnz3o0C5hxVwNUlGTAAg3V": {
+   "type": "ordered",
+   "parent_id": "D7Tdd0mrDocr4Axn5BqlE0Kggwg",
+   "children": [],
+   "runs": [
+    {
+     "s": "申請處理中：",
+     "a": {
+      "bold": "true"
+     }
+    },
+    {
+     "s": "\n送出申請後，登入該帳號會顯示「刪除帳號申請處理中」。\n畫面會顯示申請帳號的手機號碼、申請時間，以及預計處理時間（5 個工作天內）。\n"
+    },
+    {
+     "s": "需要協助時，點擊【聯繫客服】。"
+    }
+   ],
+   "seq": "6"
+  },
+  "IdDBd49ADobqw2xEOTLl4Gk7gqx": {
+   "type": "image",
+   "parent_id": "D7Tdd0mrDocr4Axn5BqlE0Kggwg",
+   "children": [],
+   "image": {
+    "token": "X8wzbh1jTo38jQxpxblle5qQg9b",
+    "width": 1125,
+    "height": 2436
+   }
+  },
+  "GwGvdstDIouXV7x6DY9l4CLxguf": {
+   "type": "text",
+   "parent_id": "D7Tdd0mrDocr4Axn5BqlE0Kggwg",
+   "children": [],
+   "runs": [
+    {
+     "s": ""
+    }
+   ]
+  },
+  "Mr4fdjOdvoHUvGxb5zylAlcSgbd": {
+   "type": "grid_column",
+   "parent_id": "Totpd2Vbvo4tSKxOBf6lnEWjghc",
+   "children": [
+    "TMJadRtxAoZRxxxNQ4Ll3s7kgof"
+   ]
+  },
+  "TMJadRtxAoZRxxxNQ4Ll3s7kgof": {
+   "type": "text",
+   "parent_id": "Mr4fdjOdvoHUvGxb5zylAlcSgbd",
+   "children": [],
+   "runs": [
+    {
+     "s": ""
+    }
+   ]
+  },
+  "J7z0dJpqNoIDW7xfaVSlRSsYguf": {
+   "type": "grid_column",
+   "parent_id": "Totpd2Vbvo4tSKxOBf6lnEWjghc",
+   "children": [
+    "RfRndGpRboGLbZxdBwel1VnkgZc"
+   ]
+  },
+  "RfRndGpRboGLbZxdBwel1VnkgZc": {
+   "type": "text",
+   "parent_id": "J7z0dJpqNoIDW7xfaVSlRSsYguf",
+   "children": [],
+   "runs": [
+    {
+     "s": ""
+    }
+   ]
+  },
+  "Pz5bd7VgXobSSEx08TIlnbWGg0b": {
+   "type": "heading2",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": "處理結果"
+    }
+   ]
+  },
+  "PwQ3dnS9moZSkNxcgltlBnkHgwe": {
+   "type": "text",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": "營運團隊確認帳號狀態後，若需要協助處理待付款項、訂閱或已綁定服務，會與你聯繫。\n刪除完成後，系統會以 Email 通知你已完成刪除。\nApp 不會另外通知，只有用已申請刪除的帳號登入時，才會告知帳號目前正在刪除階段。\n營運團隊執行刪除前，你都可以取消申請，帳號會保留，不會刪除。\n"
+    },
+    {
+     "s": "需要取消時，在「刪除帳號申請處理中」畫面點擊【聯繫客服】告知即可。"
+    }
+   ]
+  },
+  "Ya3tdh2AeoHml8xurTllLLmcg5g": {
+   "type": "text",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": "💡 營運團隊執行刪除後，就無法再取消申請，帳號資料也無法復原。"
+    }
+   ]
+  },
+  "IZ4UdEmi6o2wsyxdY6XlAIXagAd": {
+   "type": "text",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": ""
+    }
+   ]
+  },
+  "V10qdtYiQo4UUTxcuOalKQCZg1b": {
    "type": "heading1",
    "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
    "children": [],
@@ -10050,26 +10545,6 @@
    ]
   },
   "P3SMdRzFCoSWlVx61NHlm4bngxe": {
-   "type": "text",
-   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
-   "children": [],
-   "runs": [
-    {
-     "s": ""
-    }
-   ]
-  },
-  "LgNfd4sdYokooOxzOFOl9ShZgMe": {
-   "type": "text",
-   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
-   "children": [],
-   "runs": [
-    {
-     "s": ""
-    }
-   ]
-  },
-  "AoMXdGV60o60OFxLqWDlWiTdgmc": {
    "type": "text",
    "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
    "children": [],
