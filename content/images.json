@@ -1024,12 +1024,6 @@
   "doc": "ampgo",
   "sha1": "0cdaa02e472f14117b9fa52421f1741390b2470d"
  },
- "ampgo:Vz7wbanKSomh5Px5yfolL2lygkc": {
-  "file": "img/ampgo/Vz7wbanKSomh5Px5yfolL2lygkc.webp",
-  "bytes": 31622,
-  "doc": "ampgo",
-  "sha1": "0ba04f1596de9b0f4ceb0e54f1dc31f44f96fbd1"
- },
  "ampgo:AQxLbfDUuoQnNcxLstmluWEugLi": {
   "file": "img/ampgo/AQxLbfDUuoQnNcxLstmluWEugLi.webp",
   "bytes": 64634,
@@ -1047,5 +1041,23 @@
   "bytes": 37848,
   "doc": "ampgo",
   "sha1": "41b6028110dfaa04657a44f961f27611779732c9"
+ },
+ "ampgo:Shwfbm6cxoNKWux9SxQlHBo6gQg": {
+  "file": "img/ampgo/Shwfbm6cxoNKWux9SxQlHBo6gQg.webp",
+  "bytes": 32162,
+  "doc": "ampgo",
+  "sha1": "e0623c20df1aae4ab83391f5a3f9b86201023b91"
+ },
+ "ampgo:U33wbwY0aoypWCxxEM7l07PDgnE": {
+  "file": "img/ampgo/U33wbwY0aoypWCxxEM7l07PDgnE.webp",
+  "bytes": 66354,
+  "doc": "ampgo",
+  "sha1": "6722b324acd2d2dba4942c079359ecec167c3e5d"
+ },
+ "ampgo:JewPb9fxXoeWN6x2lrXljy28gwb": {
+  "file": "img/ampgo/JewPb9fxXoeWN6x2lrXljy28gwb.webp",
+  "bytes": 15122,
+  "doc": "ampgo",
+  "sha1": "1842ff0ebb557a41efd8dee84300c65fdb049d6d"
  }
 }

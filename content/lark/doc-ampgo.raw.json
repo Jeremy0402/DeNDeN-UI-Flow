@@ -3395,8 +3395,7 @@
    "parent_id": "M7tkdCww2oyeHkxSK15lTxomgDd",
    "children": [
     "IaxkdLl0yoCmcjxNWSal0peLgjd",
-    "Y8PfdOvA8oEUcEx2mxEl4wQzgpb",
-    "GqmHdQBkfo6DW5xhRG6lc1vHgGb"
+    "DsVxdU1ArofROKx36BVlvApZgGb"
    ]
   },
   "IaxkdLl0yoCmcjxNWSal0peLgjd": {
@@ -3419,25 +3418,15 @@
    ],
    "seq": "1"
   },
-  "Y8PfdOvA8oEUcEx2mxEl4wQzgpb": {
+  "DsVxdU1ArofROKx36BVlvApZgGb": {
    "type": "image",
    "parent_id": "PZszdlb7WosFVex2Gkcl4vrIgRb",
    "children": [],
    "image": {
-    "token": "Vz7wbanKSomh5Px5yfolL2lygkc",
+    "token": "Shwfbm6cxoNKWux9SxQlHBo6gQg",
     "width": 1125,
     "height": 2436
    }
-  },
-  "GqmHdQBkfo6DW5xhRG6lc1vHgGb": {
-   "type": "text",
-   "parent_id": "PZszdlb7WosFVex2Gkcl4vrIgRb",
-   "children": [],
-   "runs": [
-    {
-     "s": ""
-    }
-   ]
   },
   "OBxPdUeS4oX8bUx0MYslqUp2ghc": {
    "type": "grid_column",
@@ -3541,7 +3530,8 @@
    "type": "grid_column",
    "parent_id": "M7tkdCww2oyeHkxSK15lTxomgDd",
    "children": [
-    "HRqFdvT35oN82ex51mrlbNZpgGc"
+    "HRqFdvT35oN82ex51mrlbNZpgGc",
+    "Y1dZdOIZkoobQpxFY9hl4zJkg3f"
    ]
   },
   "HRqFdvT35oN82ex51mrlbNZpgGc": {
@@ -3559,10 +3549,20 @@
      "s": "\n「補充說明」為選填，最多 200 字。\n勾選「最後確認」的兩個項目後，點擊【送出申請】。\n"
     },
     {
-     "s": "任一項未勾選時，無法送出申請。（圖片待補）"
+     "s": "任一項未勾選時，無法送出申請。"
     }
    ],
    "seq": "4"
+  },
+  "Y1dZdOIZkoobQpxFY9hl4zJkg3f": {
+   "type": "image",
+   "parent_id": "WJcadZptLoQf2wxmMdFlyZ4dg8g",
+   "children": [],
+   "image": {
+    "token": "U33wbwY0aoypWCxxEM7l07PDgnE",
+    "width": 1125,
+    "height": 3084
+   }
   },
   "Totpd2Vbvo4tSKxOBf6lnEWjghc": {
    "type": "grid",
@@ -3578,7 +3578,8 @@
    "type": "grid_column",
    "parent_id": "Totpd2Vbvo4tSKxOBf6lnEWjghc",
    "children": [
-    "YJywdUNQio2dBQxuaQMlZ3pqg8d"
+    "YJywdUNQio2dBQxuaQMlZ3pqg8d",
+    "VVq1dhnUxoqlyXxQp7zlJPfkgEh"
    ]
   },
   "YJywdUNQio2dBQxuaQMlZ3pqg8d": {
@@ -3596,10 +3597,20 @@
      "s": "\n畫面會再次詢問「你確定要送出刪除申請？」，點擊【確認送出】即可送出申請。\n"
     },
     {
-     "s": "點擊【取消】則不會送出。（圖片待補）"
+     "s": "點擊【取消】則不會送出。"
     }
    ],
    "seq": "5"
+  },
+  "VVq1dhnUxoqlyXxQp7zlJPfkgEh": {
+   "type": "image",
+   "parent_id": "NFiudqxgqoQZTYx163LlDXcygzd",
+   "children": [],
+   "image": {
+    "token": "JewPb9fxXoeWN6x2lrXljy28gwb",
+    "width": 900,
+    "height": 648
+   }
   },
   "D7Tdd0mrDocr4Axn5BqlE0Kggwg": {
    "type": "grid_column",
