@@ -630,6 +630,9 @@
   const isUnread = (n) => !readNotices.has(n.id) && Date.now() - new Date(n.at) < NOTICE_FRESH_DAYS * 864e5;
   const saveRead = () => store.set('uf.notices.read', JSON.stringify([...readNotices].filter((id) => NOTICES.some((n) => n.id === id))));
 
+  // 第一次來的人不需要被一整串舊更新的紅點嚇到：只有之後新增的異動才算未讀
+  if (store.get('uf.notices.read') === null) { NOTICES.forEach((n) => readNotices.add(n.id)); saveRead(); }
+
   function renderNotices() {
     const unread = NOTICES.filter(isUnread).length;
     $('#notices-badge').hidden = !unread;
@@ -683,6 +686,7 @@
   $('#sync-text').textContent = `資料更新於 ${fmtStamp(UPDATED_AT)}`;
   renderNotices();
   renderChannels();
+  $('#skip').addEventListener('click', (e) => { e.preventDefault(); $('#app').focus(); });
   window.addEventListener('hashchange', render);
   render();
 })();

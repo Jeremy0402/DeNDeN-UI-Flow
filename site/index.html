@@ -8,10 +8,14 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0B2545">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="assets/style.css">
 <script>/* 在畫面出現前套用使用者選的外觀，避免閃一下 */try{var t=localStorage.getItem('uf.theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body>
+<a class="skip" id="skip" href="#/">跳到主要內容</a>
 <div class="banner-m" id="banner-m" hidden></div>
 <header class="topbar">
   <a class="brand" href="#/">
@@ -42,7 +46,7 @@
   </div>
 </header>
 <nav class="channelbar" id="channelbar" aria-label="通路"></nav>
-<main id="app"></main>
+<main id="app" tabindex="-1"></main>
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="放大畫面" hidden>
   <div class="lb-scroll"><img class="lb-img" id="lb-img" alt=""></div>
   <div class="lb-cap" id="lb-cap"></div>

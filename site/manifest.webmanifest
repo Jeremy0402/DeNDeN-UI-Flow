@@ -1,0 +1,15 @@
+{
+  "name": "DeNDeN UI Flow",
+  "short_name": "UI Flow",
+  "description": "AmpGO、全支付充電漫遊的操作畫面圖解（內部專用）",
+  "lang": "zh-Hant-TW",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0B2545",
+  "theme_color": "#0B2545",
+  "icons": [
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ]
+}
