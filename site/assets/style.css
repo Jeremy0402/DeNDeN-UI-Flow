@@ -188,6 +188,8 @@ img { max-width: 100%; }
 .theme-seg button { border: 0; background: none; height: 26px; padding: 0 10px; border-radius: 999px; font-size: 0.8125rem; cursor: pointer; color: var(--sub); display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
 .theme-seg button[aria-pressed="true"] { background: var(--text); color: var(--card); }
 .ch-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ch, var(--muted)); flex-shrink: 0; display: inline-block; }
+.ch-logo { width: 20px; height: 20px; border-radius: 22%; flex-shrink: 0; display: block; }
+.badge .ch-logo { width: 16px; height: 16px; }
 .ch-emoji { flex-shrink: 0; line-height: 1; font-size: 1.05em; }
 
 /* ---------- 通用 ---------- */
@@ -261,8 +263,8 @@ mark { background: var(--mark-bg); color: var(--mark-text); border-radius: 3px; 
 .recent-label { font-size: 0.8125rem; color: var(--sub); white-space: nowrap; display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; }
 .recent a { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 12px 0 5px; border-radius: 12px; background: var(--card); border: 1px solid var(--border); color: var(--text); font-size: 0.875rem; font-weight: 500; white-space: nowrap; flex-shrink: 0; }
 .recent a:hover { text-decoration: none; border-color: var(--line); }
-.recent img { width: 22px; height: 28px; object-fit: cover; object-position: top; border-radius: 5px; border: 1px solid var(--border); }
-.recent a:not(:has(img)) { padding-left: 12px; }
+.recent a > img { width: 22px; height: 28px; object-fit: cover; object-position: top; border-radius: 5px; border: 1px solid var(--border); }
+.recent a:not(:has(> img)) { padding-left: 12px; }
 .recent-ch { font-size: 0.75rem; }
 .group { display: flex; align-items: center; gap: 10px; margin: 34px 0 14px; flex-wrap: wrap; }
 .group h2 { margin: 0; font-size: 1.25rem; display: inline-flex; align-items: center; gap: 8px; }

@@ -68,7 +68,7 @@
   const recent = (() => { try { return JSON.parse(store.get('uf.recent') || '[]').filter((id) => flows.some((f) => f.id === id)); } catch { return []; } })();
   const touchRecent = (f) => { const k = recent.indexOf(f.id); if (k >= 0) recent.splice(k, 1); recent.unshift(f.id); recent.length = Math.min(recent.length, 6); store.set('uf.recent', JSON.stringify(recent)); };
   // 通路標記：有 emoji 就用 emoji（與其他渲染器一致），沒有才退回色點
-  const chMark = (c) => (c.emoji ? `<span class="ch-emoji" aria-hidden="true">${c.emoji}</span>` : `<span class="ch-dot" style="--ch:${c.color}"></span>`);
+  const chMark = (c) => (c.logo ? `<img class="ch-logo" src="${esc(c.logo)}" alt="" width="20" height="20">` : c.emoji ? `<span class="ch-emoji" aria-hidden="true">${c.emoji}</span>` : `<span class="ch-dot" style="--ch:${c.color}"></span>`);
   const chBadge = (id) => { const c = chMap[id]; return c ? `<span class="badge" style="--ch:${c.color}">${chMark(c)}${esc(c.name)}</span>` : ''; };
   const thumb = (im) => (im ? im.th || im.src : '');
   const stepTitle = (f, i) => plain(f.steps[i].title) || (f.steps.length === 1 ? f.title : `第 ${i + 1} 個畫面`);
@@ -192,7 +192,7 @@
     if (!list.length) return '';
     return `<div class="recent"><span class="recent-label">${ic('clock')} 最近看過</span>${list.map((f) => {
       const im = f.steps[0]?.imgs[0];
-      return `<a href="${flowHref(f)}">${im ? `<img src="${esc(thumb(im))}" alt="" loading="lazy">` : ''}<span>${esc(f.title)}</span>${chMap[f.channel] && channel === 'all' && D.channels.length > 1 ? `<span class="recent-ch">${chMap[f.channel].emoji || ''}</span>` : ''}</a>`;
+      return `<a href="${flowHref(f)}">${im ? `<img src="${esc(thumb(im))}" alt="" loading="lazy">` : ''}<span>${esc(f.title)}</span>${chMap[f.channel] && channel === 'all' && D.channels.length > 1 ? `<span class="recent-ch">${chMark(chMap[f.channel])}</span>` : ''}</a>`;
     }).join('')}</div>`;
   }
 

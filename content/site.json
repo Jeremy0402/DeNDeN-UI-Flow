@@ -4,8 +4,8 @@
   "subtitle": "充電漫遊・操作流程與畫面",
   "banner": "App 與活動內容隨時可能改版或更新，請以 App 實際畫面與最新活動說明為準；本站圖片僅為製作當下的畫面。",
   "channels": [
-    { "id": "ampgo", "name": "AmpGO", "color": "#0A84FF", "emoji": "⚡" },
-    { "id": "pxpay", "name": "全支付", "color": "#E8453C", "emoji": "🐯" }
+    { "id": "ampgo", "name": "AmpGO", "color": "#0A84FF", "logo": "img/brand/ampgo.webp" },
+    { "id": "pxpay", "name": "全支付", "color": "#E8453C", "logo": "img/brand/pxpay.webp" }
   ],
   "guideOrder": ["ampgo-roaming", "pxpay-roaming"],
 
