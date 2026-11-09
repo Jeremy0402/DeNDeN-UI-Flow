@@ -445,7 +445,8 @@ mark { background: var(--mark-bg); color: var(--mark-text); border-radius: 3px; 
 .e-tile img { width: 100%; }
 .e-detail { position: sticky; top: calc(var(--top) + 70px); background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 20px; display: grid; grid-template-columns: 180px 1fr; gap: 20px; }
 .e-detail .shot { border: 0; padding: 0; background: none; cursor: zoom-in; line-height: 0; }
-.e-detail .shot img { width: 100%; border-radius: 14px; border: 1px solid var(--border); }
+/* 這張圖也用 .shot，但不走步驟頁的淡入（app.js 只替 #shot-img 加 .ok），要直接顯示 */
+.e-detail .shot img { width: 100%; border-radius: 14px; border: 1px solid var(--border); opacity: 1; }
 .e-detail h2 { margin: 6px 0 10px; font-size: 1.375rem; }
 .kv { margin: 12px 0; }
 .kv b { display: inline-block; font-size: 0.75rem; padding: 2px 8px; border-radius: 6px; margin-bottom: 4px; }
