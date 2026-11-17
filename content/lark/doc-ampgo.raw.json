@@ -1129,7 +1129,7 @@
    "children": [
     "PmQkdiVIKoZGiVx5BX8lBIXfg7f",
     "NYgxdjQLboYiLpxocKul6oHWgKC",
-    "UL8SdTzKsoGVI5xgO6ZlZYz3ggc"
+    "RpoGdlU1EoBUjxxhb6ZlykTugOc"
    ]
   },
   "PmQkdiVIKoZGiVx5BX8lBIXfg7f": {
@@ -1162,15 +1162,15 @@
     "height": 1624
    }
   },
-  "UL8SdTzKsoGVI5xgO6ZlZYz3ggc": {
-   "type": "text",
+  "RpoGdlU1EoBUjxxhb6ZlykTugOc": {
+   "type": "image",
    "parent_id": "WJkvdId7Wok2NFxsi5zlgKUPgMf",
    "children": [],
-   "runs": [
-    {
-     "s": "📷 after-chart-fixture.png ｜ after-tooltip-fixture.png"
-    }
-   ]
+   "image": {
+    "token": "DMc0beLYEomOsQx7pv5lAWjNgjb",
+    "width": 1204,
+    "height": 2464
+   }
   },
   "NHr3d38mro961WxEFkDlsO2Igvd": {
    "type": "grid_column",
