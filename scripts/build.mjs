@@ -229,7 +229,12 @@ function convertLarkDoc(spec) {
         col.title = title;
         titleCol[plain(title).trim()] = colId;
         if (body.length) col.body.push({ t: 'p', r: body });
-        if ((first.children || []).length) col.body.push(...convertSeq(first.children, ctx, 1));
+        // 截圖縮排在標題那一項底下（Lark 裡按了 Tab）時，一樣算這一步的截圖，不要變成說明裡的小圖
+        const kidIds = first.children || [];
+        const nestedImgs = kidIds.filter((id) => B[id]?.type === 'image');
+        col.imgs.push(...nestedImgs.map((id) => img(spec.imgDoc, B[id].image.token)).filter(Boolean));
+        const restKids = kidIds.filter((id) => !nestedImgs.includes(id));
+        if (restKids.length) col.body.push(...convertSeq(restKids, ctx, 1));
         startAt = 1;
       }
     }
