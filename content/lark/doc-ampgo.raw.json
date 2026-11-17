@@ -8,7 +8,9 @@
    "children": [
     "Bu5gdz19Qo1qz7x4ykKlVTLwgwg",
     "Zpt1doPNGoKducxsGLklKZ9Iggd",
-    "NcXldH8jYo0Nbax28Snl4sMKgTh",
+    "B98mdwwqIoERdxxEOajlPIAegbb",
+    "FUBNdc5yvoqUSCxMm5Ulb9Q0gUf",
+    "U5rUdCykroEuWPxP2ZBlRODUgcE",
     "K4xfdBM4nolq4bx6ykUlMK8ZgLg",
     "Tc54djdpkokycqxVsIAlLNJdgFe",
     "J5Yrd50spoUjmTxfu9Hl69qPgpg",
@@ -208,6 +210,9 @@
     "RhxOdWfYSoSt0ex8Exaltm8SgDc",
     "ABwEdFHrnoWgAwxSL6hljdfvgeh",
     "DYAmdk86OoIh14xPN3MlFg0VgEb",
+    "TWsSdxsgYojWlxxdjTTluhQ2gGc",
+    "C6cMdyRKToHeuwxNRsClZWZagch",
+    "RgkBd1zYhod3IoxEV6zl09ZJg2b",
     "P4KsdKwt5oVEL9xI8dNldJTBggB",
     "Sc6HdaAmZomZ9sxpUIilQxtxggd",
     "TVsvdJol7oYt1Fx9joTlJlCCg4f",
@@ -372,15 +377,169 @@
     }
    ]
   },
-  "NcXldH8jYo0Nbax28Snl4sMKgTh": {
+  "B98mdwwqIoERdxxEOajlPIAegbb": {
+   "type": "heading1",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": "查看站點費率"
+    }
+   ]
+  },
+  "FUBNdc5yvoqUSCxMm5Ulb9Q0gUf": {
    "type": "text",
    "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
    "children": [],
    "runs": [
     {
-     "s": ""
+     "s": "費率依充電營運商、充電規格與時段而不同。\n充電前，你可以在站點頁面查看近一週的費率。\n💡 支援充電漫遊的站點都會顯示費率表，需更新至 1.9.14 以上版本。\n"
+    },
+    {
+     "s": "💡 費率表僅限 AmpGO App，全支付 App 不會顯示。"
     }
    ]
+  },
+  "U5rUdCykroEuWPxP2ZBlRODUgcE": {
+   "type": "grid",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [
+    "CSGadkTfroFDN9xFanEluOh4gCf",
+    "V5dadRtpTo0txNxttDYlXzR4gPR",
+    "SCesdvZokon7ZxxaFdXlII2eg7e",
+    "M2Chd44azo0aoXxUeSIlHCeAgqd"
+   ]
+  },
+  "CSGadkTfroFDN9xFanEluOh4gCf": {
+   "type": "grid_column",
+   "parent_id": "U5rUdCykroEuWPxP2ZBlRODUgcE",
+   "children": [
+    "I76sd8eD5oYLRvxXXb6lDiOLg6g"
+   ]
+  },
+  "I76sd8eD5oYLRvxXXb6lDiOLg6g": {
+   "type": "ordered",
+   "parent_id": "CSGadkTfroFDN9xFanEluOh4gCf",
+   "children": [],
+   "runs": [
+    {
+     "s": "進入站點頁面：",
+     "a": {
+      "bold": "true"
+     }
+    },
+    {
+     "s": "\n"
+    },
+    {
+     "s": "點擊地圖上的站點，再點擊資訊卡進入站點頁面。"
+    }
+   ],
+   "seq": "1"
+  },
+  "V5dadRtpTo0txNxttDYlXzR4gPR": {
+   "type": "grid_column",
+   "parent_id": "U5rUdCykroEuWPxP2ZBlRODUgcE",
+   "children": [
+    "L7FtdyZnKoaRi5xO4ROlvPOCg1b"
+   ]
+  },
+  "L7FtdyZnKoaRi5xO4ROlvPOCg1b": {
+   "type": "ordered",
+   "parent_id": "V5dadRtpTo0txNxttDYlXzR4gPR",
+   "children": [
+    "ABkld3IQdoSJOQx4ljklErhFgGr"
+   ],
+   "runs": [
+    {
+     "s": "依時段計費的站點（元／度）：",
+     "a": {
+      "bold": "true"
+     }
+    },
+    {
+     "s": "\n在「當前電費」區塊點擊充電規格（例如 CCS1、CCS2）和星期，查看當天各時段的費率。\n「當前費率」標示的是目前時段的價格。\n"
+    },
+    {
+     "s": "點擊區段，即可查看該時段的詳細費率。"
+    }
+   ],
+   "seq": "2"
+  },
+  "ABkld3IQdoSJOQx4ljklErhFgGr": {
+   "type": "image",
+   "parent_id": "L7FtdyZnKoaRi5xO4ROlvPOCg1b",
+   "children": [],
+   "image": {
+    "token": "IsOdbYWR0ot1uVxO5t7lyfrsgPg",
+    "width": 1179,
+    "height": 3270
+   }
+  },
+  "SCesdvZokon7ZxxaFdXlII2eg7e": {
+   "type": "grid_column",
+   "parent_id": "U5rUdCykroEuWPxP2ZBlRODUgcE",
+   "children": [
+    "JbQVdw0qmoYIzTxRr3BlIraagLc",
+    "HoOrdbPdQoyY5dxq4WFlEF2Igyf"
+   ]
+  },
+  "JbQVdw0qmoYIzTxRr3BlIraagLc": {
+   "type": "ordered",
+   "parent_id": "SCesdvZokon7ZxxaFdXlII2eg7e",
+   "children": [],
+   "runs": [
+    {
+     "s": "依功率計費的站點（元／分）：",
+     "a": {
+      "bold": "true"
+     }
+    },
+    {
+     "s": "\n點擊充電規格，查看各充電功率（kW）區間的費率。\n點擊區段，即可查看該功率區間的費率。\n"
+    },
+    {
+     "s": "圖表只顯示當下的費率，實際計費可能隨時段變動。"
+    }
+   ],
+   "seq": "3"
+  },
+  "HoOrdbPdQoyY5dxq4WFlEF2Igyf": {
+   "type": "image",
+   "parent_id": "SCesdvZokon7ZxxaFdXlII2eg7e",
+   "children": [],
+   "image": {
+    "token": "LHoCbRcofog7zWxq57ElPjCvgsf",
+    "width": 1179,
+    "height": 3752
+   }
+  },
+  "M2Chd44azo0aoXxUeSIlHCeAgqd": {
+   "type": "grid_column",
+   "parent_id": "U5rUdCykroEuWPxP2ZBlRODUgcE",
+   "children": [
+    "Hf9gdnpXAoCNA9xqByXlSdUdgcd"
+   ]
+  },
+  "Hf9gdnpXAoCNA9xqByXlSdUdgcd": {
+   "type": "ordered",
+   "parent_id": "M2Chd44azo0aoXxUeSIlHCeAgqd",
+   "children": [],
+   "runs": [
+    {
+     "s": "確認更新時間：",
+     "a": {
+      "bold": "true"
+     }
+    },
+    {
+     "s": "\n圖表下方的「最近更新時間」，是充電營運商最後一次提供費率的時間。\n"
+    },
+    {
+     "s": "實際費率以充電營運商公告為準。"
+    }
+   ],
+   "seq": "4"
   },
   "K4xfdBM4nolq4bx6ykUlMK8ZgLg": {
    "type": "heading1",
@@ -969,7 +1128,8 @@
    "parent_id": "HNyBdMAQOouzvmxApMdlMGyUgfh",
    "children": [
     "PmQkdiVIKoZGiVx5BX8lBIXfg7f",
-    "NYgxdjQLboYiLpxocKul6oHWgKC"
+    "NYgxdjQLboYiLpxocKul6oHWgKC",
+    "UL8SdTzKsoGVI5xgO6ZlZYz3ggc"
    ]
   },
   "PmQkdiVIKoZGiVx5BX8lBIXfg7f": {
@@ -984,10 +1144,10 @@
      }
     },
     {
-     "s": "\n"
+     "s": "\n確認站點、充電槍、費率與發票設定無誤後，點擊下方按鈕繼續。\n"
     },
     {
-     "s": "確認站點、充電槍、費率與發票設定無誤後，點擊下方按鈕繼續。"
+     "s": "支援充電漫遊的站點會依你選擇的充電規格，再次顯示時段費率圖；點擊區段，即可查看該時段的價錢。"
     }
    ],
    "seq": "2"
@@ -1001,6 +1161,16 @@
     "width": 750,
     "height": 1624
    }
+  },
+  "UL8SdTzKsoGVI5xgO6ZlZYz3ggc": {
+   "type": "text",
+   "parent_id": "WJkvdId7Wok2NFxsi5zlgKUPgMf",
+   "children": [],
+   "runs": [
+    {
+     "s": "📷 after-chart-fixture.png ｜ after-tooltip-fixture.png"
+    }
+   ]
   },
   "NHr3d38mro961WxEFkDlsO2Igvd": {
    "type": "grid_column",
@@ -2988,7 +3158,7 @@
      "s": "若充電時出現錯誤畫面，可依畫面標題對照以下說明處理。\n"
     },
     {
-     "s": "需要聯繫客服時，請提供錯誤畫面截圖，或告知畫面標題（例如「設備異常」、「充電槍無回應」）與錯誤碼，我們能更快協助你。"
+     "s": "需要聯繫客服時，請提供錯誤畫面截圖，或告知畫面標題（例如「設備異常」、「充電槍無回應」）與錯誤碼，以及 App 版本號，我們能更快協助你。"
     }
    ]
   },
@@ -9065,6 +9235,128 @@
     }
    ]
   },
+  "TWsSdxsgYojWlxxdjTTluhQ2gGc": {
+   "type": "heading1",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": "查看 App 版本"
+    }
+   ]
+  },
+  "C6cMdyRKToHeuwxNRsClZWZagch": {
+   "type": "text",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [],
+   "runs": [
+    {
+     "s": "遇到功能異常或畫面與說明不同時，可以先確認 App 是否為最新版本。"
+    }
+   ]
+  },
+  "RgkBd1zYhod3IoxEV6zl09ZJg2b": {
+   "type": "grid",
+   "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
+   "children": [
+    "UQV5dkPgsoBPS6xCmrol68IigGf",
+    "Xd4tdg5hloIo1rx3OcUl1Prrg0c",
+    "CWumdQ4hwoPqrwxw0aulTgB2gJc"
+   ]
+  },
+  "UQV5dkPgsoBPS6xCmrol68IigGf": {
+   "type": "grid_column",
+   "parent_id": "RgkBd1zYhod3IoxEV6zl09ZJg2b",
+   "children": [
+    "JR8vdjTnkoZhBKxs6ovlFhC3g6m",
+    "SI7TdlzNTok63cxMt2al6hhBgQf"
+   ]
+  },
+  "JR8vdjTnkoZhBKxs6ovlFhC3g6m": {
+   "type": "ordered",
+   "parent_id": "UQV5dkPgsoBPS6xCmrol68IigGf",
+   "children": [],
+   "runs": [
+    {
+     "s": "進入會員專區：",
+     "a": {
+      "bold": "true"
+     }
+    },
+    {
+     "s": "\n"
+    },
+    {
+     "s": "點擊下方導覽列的【會員】。"
+    }
+   ],
+   "seq": "1"
+  },
+  "SI7TdlzNTok63cxMt2al6hhBgQf": {
+   "type": "image",
+   "parent_id": "UQV5dkPgsoBPS6xCmrol68IigGf",
+   "children": [],
+   "image": {
+    "token": "Z95Ybwhpyo3mXJxWIEelOGQqg3g",
+    "width": 1179,
+    "height": 2439
+   }
+  },
+  "Xd4tdg5hloIo1rx3OcUl1Prrg0c": {
+   "type": "grid_column",
+   "parent_id": "RgkBd1zYhod3IoxEV6zl09ZJg2b",
+   "children": [
+    "L6gjdyMZno42zjxGHI6lA5zqgab",
+    "UYYtd2qKFoyF86x8QNhlnAZAgF2"
+   ]
+  },
+  "L6gjdyMZno42zjxGHI6lA5zqgab": {
+   "type": "ordered",
+   "parent_id": "Xd4tdg5hloIo1rx3OcUl1Prrg0c",
+   "children": [],
+   "runs": [
+    {
+     "s": "查看版本號：",
+     "a": {
+      "bold": "true"
+     }
+    },
+    {
+     "s": "\n捲動到最下方，「版本號」會顯示目前的 App 版本。\n右側顯示「已是最新版本」，表示不需要更新。\n"
+    },
+    {
+     "s": "💡 版本較舊時，請到 App Store 或 Google Play 更新。"
+    }
+   ],
+   "seq": "2"
+  },
+  "UYYtd2qKFoyF86x8QNhlnAZAgF2": {
+   "type": "image",
+   "parent_id": "Xd4tdg5hloIo1rx3OcUl1Prrg0c",
+   "children": [],
+   "image": {
+    "token": "OtZTbekj5oLDLfxknuul6oxRgNg",
+    "width": 1179,
+    "height": 2441
+   }
+  },
+  "CWumdQ4hwoPqrwxw0aulTgB2gJc": {
+   "type": "grid_column",
+   "parent_id": "RgkBd1zYhod3IoxEV6zl09ZJg2b",
+   "children": [
+    "Kv22dsKD8ouadIxaAOSlH8AJgXf"
+   ]
+  },
+  "Kv22dsKD8ouadIxaAOSlH8AJgXf": {
+   "type": "text",
+   "parent_id": "CWumdQ4hwoPqrwxw0aulTgB2gJc",
+   "children": [],
+   "runs": [
+    {
+     "s": ""
+    }
+   ]
+  },
   "P4KsdKwt5oVEL9xI8dNldJTBggB": {
    "type": "heading1",
    "parent_id": "JCQpdZZcmojVijxSpnJlCS8TgKL",
@@ -9213,7 +9505,8 @@
    "parent_id": "NugGd7Dj8ozuX5xzXvWlM5Zxg4X",
    "children": [
     "GvuGdzESeow5VWxWwBWlO7MUgol",
-    "IxHfdkKpjog9OWx3WkXlDNJvglc"
+    "IxHfdkKpjog9OWx3WkXlDNJvglc",
+    "HhFdd6Xgcof3xExq5uolWE8ngod"
    ]
   },
   "GvuGdzESeow5VWxWwBWlO7MUgol": {
@@ -9245,6 +9538,16 @@
     "width": 1125,
     "height": 2436
    }
+  },
+  "HhFdd6Xgcof3xExq5uolWE8ngod": {
+   "type": "text",
+   "parent_id": "UKKjdf2sEodG1axIMsxlzZk2gng",
+   "children": [],
+   "runs": [
+    {
+     "s": ""
+    }
+   ]
   },
   "Y4IMdzWQZoldJfxV39ilCYRjgwf": {
    "type": "grid_column",
@@ -9397,7 +9700,8 @@
    "parent_id": "IVa5dl6pAoeZYmxrL2flmHsugmN",
    "children": [
     "Z5qqdrJUQou377x5tjplp5L9gYb",
-    "BlOVdRwK3oomktxFg76l8K88gmr"
+    "BlOVdRwK3oomktxFg76l8K88gmr",
+    "YCjDdUJsuopNfQxGUgKlmog0gkc"
    ]
   },
   "Z5qqdrJUQou377x5tjplp5L9gYb": {
@@ -9429,6 +9733,16 @@
     "width": 900,
     "height": 648
    }
+  },
+  "YCjDdUJsuopNfQxGUgKlmog0gkc": {
+   "type": "text",
+   "parent_id": "Kng8dAVELoxCL2xnEt0lWiGigiv",
+   "children": [],
+   "runs": [
+    {
+     "s": ""
+    }
+   ]
   },
   "Xzd8d6GT2ofU1WxwbOjlLVb0gMb": {
    "type": "grid_column",
